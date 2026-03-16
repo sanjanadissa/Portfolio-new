@@ -1,0 +1,478 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=DM+Mono:wght@400;500&display=swap');
+
+.sc-section {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background: #000000;
+}
+
+.sc-inner {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.sc-header {
+  position: absolute;
+  top: 2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.sc-eyebrow {
+  font-family: 'Inter', 'Arial', sans-serif;
+  font-size: clamp(1rem, 1.5vw, 1.1rem);
+  /* letter-spacing: 0.03em; */
+  font-weight: 500;
+
+  color:rgba(30,20,10,0.5);
+  margin-bottom: 0.5rem;
+  
+
+  
+}
+
+.sc-title {
+   font-family: 'Clash Grotesk','Arial Black', sans-serif;
+  font-size: clamp(2.8rem, 6vw, 5.5rem);
+  line-height: 1;
+  text-transform: uppercase;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.sc-title span {
+  background: linear-gradient(135deg, #a78bfa, #6366f1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.sc-perspective {
+  position: absolute;
+  inset: 0;
+  perspective: 900px;
+  perspective-origin: center 40%;
+}
+
+.sc-card {
+  position: absolute;
+  top: 53%;
+  left: 50%;
+  width: 67%;
+  height: 70%;
+  max-width: 1200px;
+  border-radius: 1.5rem;
+  overflow: hidden;
+  background-color: var(--card-bg, #1a1d29);
+  box-shadow:
+    0 50px 100px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+  transform-origin: center bottom;
+  will-change: transform;
+}
+
+.sc-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.sc-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sc-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 0.4rem 1rem;
+  border-radius: 999px;
+  backdrop-filter: blur(10px);
+}
+
+.sc-num {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(3rem, 6vw, 5rem);
+  font-weight: 800;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.08);
+  letter-spacing: -0.02em;
+}
+
+.sc-card-content {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 0.8fr 1.5fr;
+  gap: 2.5rem;
+  align-items: stretch;
+}
+
+.sc-text-section {
+  display: flex;
+  flex-direction: column;
+  gap: 3.5rem;
+  justify-content: flex-start;
+}
+
+.sc-proj-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(2.5rem, 4vw, 4rem);
+  font-weight: 800;
+  line-height: 0.95;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  color: #fff;
+  margin: 0;
+}
+
+.sc-desc {
+  font-family: 'Satoshi', sans-serif;
+  font-size: 1m;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.65);
+  margin: 0;
+}
+
+.sc-tech-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.sc-tech-pill {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.75);
+  text-transform: uppercase;
+}
+
+.sc-image-section {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.sc-image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 94%;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow:
+    0 25px 50px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  min-height: 280px;
+}
+
+.sc-card:hover .sc-image-wrapper {
+  transform: scale(1.02) translateY(-5px);
+}
+
+.sc-image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* display: block; */
+  object-position: center;
+}
+
+.sc-button-group {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.sc-image-section .sc-button-group {
+  width: 100%;
+  justify-content: center;
+}
+
+.sc-cta,
+.sc-details {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #fff;
+  text-decoration: none;
+  padding: 0.9rem 1.75rem;
+  border-radius: 999px;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border: none;
+  cursor: pointer;
+  z-index: 10;
+  margin: auto;
+}
+
+.sc-cta {
+  background: linear-gradient(135deg, #7c3aed, #6366f1);
+  box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
+}
+
+.sc-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(124, 58, 237, 0.6);
+}
+
+.sc-details {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.sc-details:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3);
+}
+
+.sc-cta-arrow,
+.sc-details-arrow {
+  transition: transform 0.3s ease;
+}
+
+.sc-cta:hover .sc-cta-arrow,
+.sc-details:hover .sc-details-arrow {
+  transform: translateX(4px);
+}
+
+@media (max-width: 1200px) {
+  .sc-card-content {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .sc-image-section {
+    height: 320px;
+  }
+
+  .sc-card {
+    height: 85%;
+  }
+}
+
+@media (max-width: 900px) {
+  .sc-card {
+    width: calc(100% - 2rem);
+    height: 70%;
+  }
+
+  .sc-card-inner {
+    padding: 2rem;
+    gap: 1.5rem;
+  }
+
+  .sc-card-content {
+    gap: 1.5rem;
+    grid-template-columns: 1fr;
+  }
+
+  .sc-text-section {
+    gap: 1rem;
+  }
+
+  .sc-image-section {
+    height: 280px;
+    gap: 1rem;
+  }
+
+  .sc-button-group {
+    gap: 0.5rem;
+  }
+
+  .sc-cta,
+  .sc-details {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.8rem;
+    
+  }
+
+  .sc-num {
+    font-size: 3.5rem;
+  }
+
+  .sc-proj-title {
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+  }
+}
+
+@media (max-width: 680px) {
+  .sc-card {
+    width: calc(100% - 1rem);
+    height: 60%;
+  }
+
+  .sc-card-inner {
+    padding: 1.5rem;
+    gap: 1.25rem;
+  }
+
+  .sc-card-top {
+    gap: 1rem;
+  }
+
+  .sc-num {
+    font-size: 2.5rem;
+  }
+
+  .sc-tag {
+    font-size: 0.65rem;
+    padding: 0.3rem 0.75rem;
+  }
+
+  .sc-proj-title {
+    font-size: 1.5rem;
+  }
+
+  .sc-desc {
+    font-size: 0.8rem;
+    line-height: 1.5;
+  }
+
+  .sc-image-section {
+    height: 220px;
+    gap: 0.75rem;
+  }
+
+  .sc-image-wrapper {
+    min-height: 220px;
+  }
+
+  .sc-tech-list {
+    gap: 0.35rem;
+  }
+
+  .sc-tech-pill {
+    font-size: 0.6rem;
+    padding: 0.25rem 0.6rem;
+  }
+
+  .sc-button-group {
+    gap: 0.5rem;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .sc-cta,
+  .sc-details {
+    width: 50%;
+    justify-content: center;
+    padding: 0.7rem 1.25rem;
+    font-size: 0.75rem;
+  }
+
+  .sc-cta svg,
+  .sc-details svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .sc-card {
+    width: calc(100% - 1rem);
+    height: 55%;
+  }
+
+  .sc-card-inner {
+    padding: 1.25rem;
+    gap: 1rem;
+  }
+
+  .sc-header {
+    top: 1.5rem;
+  }
+
+  .sc-eyebrow {
+   font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+   margin: 6px -31px;
+
+  }
+
+  .sc-title {
+    font-family: 'Clash Grotesk', 'Arial Black', sans-serif;
+    font-size: clamp(2.8rem, 6vw, 5.5rem);
+  }
+
+  .sc-num {
+    font-size: 2rem;
+  }
+
+  .sc-tag {
+    font-size: 0.6rem;
+    padding: 0.25rem 0.65rem;
+  }
+
+  .sc-proj-title {
+    font-size: 1.25rem;
+    line-height: 1;
+  }
+
+  .sc-desc {
+    font-size: 0.75rem;
+    line-height: 1.4;
+    max-width: 100%;
+  }
+
+  .sc-image-section {
+    height: 180px;
+    gap: 0.6rem;
+  }
+
+  .sc-image-wrapper {
+    min-height: 180px;
+  }
+
+  .sc-tech-pill {
+    font-size: 0.55rem;
+    padding: 0.2rem 0.5rem;
+  }
+
+  .sc-cta,
+  .sc-details {
+    padding: 0.6rem 0.1rem;
+    font-size: 0.7rem;
+    gap: 0.4rem;
+    
+  }
+
+  .sc-cta svg,
+  .sc-details svg {
+    width: 14px;
+    height: 14px;
+  }
+}

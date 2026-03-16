@@ -1,0 +1,124 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Caveat:wght@400;500;600&display=swap');
+
+/* ──────────────────────────────────────────────
+   InfiniteMarquee – scrolling ticker section
+   ────────────────────────────────────────────── */
+
+.marquee-section {
+  width: 100%;
+  background: #000;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  /* Minimal top gap so the tickers peek in at the bottom of the About viewport */
+  /* Large bottom padding keeps Skills section well below the fold */
+  padding: 20px 0 clamp(100px, 12vh, 200px);
+  overflow: hidden;
+  position: relative;
+}
+
+/* ── Left & right black fade shadows ──────────── */
+.marquee-section::before,
+.marquee-section::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: clamp(80px, 15vw, 200px);
+  z-index: 10;
+  pointer-events: none;
+}
+
+.marquee-section::before {
+  left: 0;
+  background: linear-gradient(to right, #000 0%, transparent 100%);
+}
+
+.marquee-section::after {
+  right: 0;
+  background: linear-gradient(to left, #000 0%, transparent 100%);
+}
+
+/* ── Individual ticker row ─────────────────────── */
+.marquee-ticker {
+  padding: 14px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
+  will-change: transform;
+}
+
+.marquee-ticker--light {
+  background-color: #ffffff;
+  transform: rotateZ(-1.8deg) scaleX(1.06);
+  box-shadow: 0 6px 40px rgba(0, 0, 0, 0.35);
+}
+
+.marquee-ticker--dark {
+  background-color: #0d0018;
+  transform: rotateZ(1.8deg) scaleX(1.06);
+  border: 1px solid #2a1845;
+  box-shadow: 0 6px 40px rgba(132, 0, 255, 0.15);
+}
+
+/* ── Scrolling wrap ────────────────────────────── */
+.marquee-wrap {
+  display: flex;
+  align-items: center;
+  gap: 60px;
+  will-change: transform;
+}
+
+/* ── Text row ──────────────────────────────────── */
+.marquee-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 48px;
+  flex-shrink: 0;
+  font-family: 'Oswald', 'Inter', sans-serif;
+  font-size: clamp(26px, 2.8vw, 48px);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+/* ── Light row text ────────────────────────────── */
+.marquee-ticker--light .marquee-text {
+  color: #0a0010;
+}
+
+/* ── Dark row text ─────────────────────────────── */
+.marquee-ticker--dark .marquee-text {
+  color: #ffffff;
+}
+
+/* ── Individual items ──────────────────────────── */
+.marquee-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.marquee-bullet {
+  opacity: 0.35;
+  margin-right: 4px;
+}
+
+/* ── Accent word ───────────────────────────────── */
+.marquee-ticker--light .marquee-accent {
+  font-family: 'Caveat', 'Georgia', cursive;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.45);
+  font-size: 1.05em;
+  margin-left: 3px;
+}
+
+.marquee-ticker--dark .marquee-accent {
+  font-family: 'Caveat', 'Georgia', cursive;
+  font-weight: 600;
+  color: #b060ff;
+  font-size: 1.05em;
+  margin-left: 3px;
+}
+
+/* ── Load the fonts ────────────────────────────── */
+/* @import moved to top of file to satisfy PostCSS rule */

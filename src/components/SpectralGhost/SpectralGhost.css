@@ -1,0 +1,262 @@
+/* ─────────────────────────────────────────────
+   SpectralGhost – Three.js ghost section
+   ───────────────────────────────────────────── */
+
+@import url("https://fonts.googleapis.com/css2?family=Boldonse&display=swap");
+
+@font-face {
+  font-family: "PPSupplyMono";
+  src: url("https://assets.codepen.io/7558/PPSupplyMono-Variable.woff2")
+    format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+}
+
+/* ── Section container ─────────────────────────── */
+.spectral-section {
+  background-color: #000;
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  letter-spacing: -0.03em;
+}
+
+/* ── Three.js canvas ───────────────────────────── */
+/* z-index:2 — canvas (ghost) renders ABOVE the quote text (z:1)           */
+.spectral-section canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: auto;
+  background: transparent;
+}
+
+/* ── Cream transition overlay ──────────────────── */
+/* z-index:3 — sits above canvas (z:2) so it can cover the dark Three.js
+   scene during the colour transition. GSAP drives it through two phases:
+   Phase 1: backgroundColor cream→black (solid, no canvas bleed-through)
+   Phase 2: opacity 1→0 (reveals ghost on the now-black background)         */
+.spectral-color-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background-color: #EEE8DC; /* matches TestimonialCards  - GSAP takes over */
+  pointer-events: none;       /* mouse events pass through to canvas below   */
+}
+
+/* ── Quote text ────────────────────────────────── */
+/* z-index:1 — BELOW the canvas (z:2) so the ghost renders on top of text. */
+/* The canvas preserves alpha in transparent areas, letting text show       */
+/* through wherever the Three.js scene is not painting solid pixels.        */
+.spectral-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  text-align: center;
+  color: #e0e0e0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.spectral-quote-container {
+  max-width: 90%;
+  overflow: hidden;
+}
+
+.spectral-quote {
+  font-family: "Boldonse", system-ui;
+  font-size: 7vw;
+  line-height: 1.3;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  margin-bottom: 5vh;
+  text-transform: uppercase;
+}
+
+.spectral-author {
+  font-family: "PPSupplyMono", monospace;
+  font-size: 20px;
+  text-transform: uppercase;
+  opacity: 0.7;
+  margin-top: 2vh;
+}
+
+/* ── Footer (structured, no extra scroll) ───────────────────────────────────── */
+
+/* ── Footer bg wrapper – scrolls over the pinned SpectralGhost ── */
+.spectral-footer-bg {
+  position: relative;
+  z-index: 5;          /* above the pinned canvas (z-index:2) */
+  width: 100%;
+  background: #000;
+}
+
+.spectral-footer {
+  position: relative;
+  width: 100%;
+  max-width: 100vw;
+  background: #000;
+  color: rgba(255, 255, 255, 0.8);
+  overflow: hidden;
+
+  /* left corner large radius, right corner sharp – matches reference */
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top-left-radius: 80px;
+  border-top-right-radius: 0px;
+
+  /* very subtle radial glow behind the top edge */
+  background-image: radial-gradient(
+    30% 80px at 50% 0%,
+    rgba(255, 255, 255, 0.05),
+    transparent
+  );
+}
+
+.spectral-footer-inner {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 48px 24px 56px;
+}
+
+/* short bright capsule at the very top center — the glowing pill seen in the reference */
+.spectral-footer-highlight {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 12%;          /* narrow capsule, not spanning the full width */
+  min-width: 120px;
+  max-width: 200px;
+  height: 2px;
+  transform: translate(-50%, -50%);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.75);
+  filter: blur(3px);
+  box-shadow: 0 0 8px 2px rgba(255, 255, 255, 0.35);
+}
+
+
+/* left column */
+.spectral-footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.spectral-footer-mark {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.spectral-footer-meta {
+  font-family: "PPSupplyMono", monospace;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+/* link groups */
+/* .spectral-footer-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 32px;
+  margin-top: 24px;
+} */
+
+.spectral-footer-section-title {
+  font-family: "PPSupplyMono", monospace;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.spectral-footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0 0;
+  display: grid;
+  gap: 10px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 14px;
+}
+
+.spectral-footer-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.25s ease;
+}
+
+.spectral-footer-link:hover {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+/* ── Marquee menu spacing ──────────────────────── */
+.fmq__menu {
+  padding-top: 40px;
+}
+
+/* large faded word below (keeps the vibe but doesn't affect layout height much) */
+.spectral-footer-ghost {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  user-select: none;
+
+  font-family: "Boldonse", system-ui;
+  font-size: clamp(52px, 12vw, 170px);
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  color: rgba(255, 255, 255, 0.06);
+  white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
+
+  transform: translateY(22%);
+}
+
+@media (min-width: 768px) {
+  .spectral-footer-inner {
+    padding: 56px 32px 72px;
+  }
+  .spectral-footer-columns {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin-top: 0;
+  }
+}
+
+@media (min-width: 1280px) {
+  
+  .spectral-footer-columns {
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .spectral-footer {
+    border-top-left-radius: 52px;
+    border-top-right-radius: 0px;
+  }
+  .spectral-footer-ghost {
+    white-space: normal;
+  }
+}

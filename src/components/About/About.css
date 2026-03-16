@@ -1,0 +1,314 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=DM+Mono:wght@400;500&family=Syne:wght@400;500;600;700;800&display=swap');
+
+/* ═══════════════════════════════════════════════════════════
+   SECTION WRAPPER
+   ═══════════════════════════════════════════════════════════ */
+.about-section {
+  position: relative;
+  background: #000000;
+  color: #fff;
+  overflow: hidden;
+}
+
+/* Grain texture overlay */
+.about-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  background-size: 180px;
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Ambient glow blobs */
+.about-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(130px);
+  pointer-events: none;
+  z-index: 0;
+}
+.about-glow--purple {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.18) 0%, transparent 70%);
+  top: -60px;
+  right: -80px;
+}
+.about-glow--cyan {
+  width: 380px;
+  height: 380px;
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.12) 0%, transparent 70%);
+  bottom: 80px;
+  left: -60px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   INNER CONTAINER — centres content with horizontal padding
+   ═══════════════════════════════════════════════════════════ */
+.about-inner {
+  position: relative;
+  z-index: 1;
+  /* Horizontal gutters only; vertical spacing comes from row children */
+  padding: 0 clamp(24px, 5vw, 72px);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ROW 1 — Full-width "ABOUT ME" heading
+   ═══════════════════════════════════════════════════════════ */
+.about-heading-row {
+  /* Very generous top padding — pushes heading well below the nav */
+  padding-top: clamp(100px, 13vh, 160px);
+  /* Large bottom gap between heading and the two-column content */
+  padding-bottom: clamp(48px, 7vh, 80px);
+}
+
+.about-heading {
+  font-family: 'Clash Grotesk','Arial Black', sans-serif;
+  font-size: clamp(2.8rem, 6vw, 5.5rem);
+  /* font-weight: 800; */
+  text-transform: uppercase;
+  line-height: 0.9;
+  /* letter-spacing: -0.01em; */
+  margin: 0;
+  opacity: 0;
+}
+
+.about-heading__name {
+  display: inline-block;
+  background: linear-gradient(135deg, #a78bfa 0%, #6366f1 50%, #06b6d4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ROW 2 — Two-column: left (2/3)  |  divider  |  right (1/3)
+   ═══════════════════════════════════════════════════════════ */
+.about-columns {
+  display: grid;
+  grid-template-columns: 2fr 1px 1fr;
+  gap: 0 clamp(32px, 4vw, 64px);
+  align-items: start;
+  /* Large bottom padding pushes the marquee (and Skills below) further down */
+  padding-bottom: clamp(80px, 12vh, 140px);
+}
+
+/* ── Vertical divider ──────────────────────────────────── */
+.about-divider {
+  width: 2px;
+  align-self: stretch;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(99, 102, 241, 0.4) 20%,
+    rgba(99, 102, 241, 0.4) 80%,
+    transparent 100%
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════
+   LEFT COLUMN — eyebrow + bio paragraphs
+   ═══════════════════════════════════════════════════════════ */
+.about-left {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  /* Right padding so text doesn't kiss the divider */
+  padding-right: clamp(16px, 2vw, 32px);
+}
+
+/* ─── Eyebrow label (shared: "Who am I?" and "Education") */
+.about-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Inter', monospace;
+  font-size: 0.98rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: rgba(99, 102, 241, 0.85);
+  margin: 0;
+  opacity: 0; /* GSAP animates to 1 */
+}
+.about-eyebrow__line {
+  display: inline-block;
+  width: 32px;
+  height: 1px;
+  background: rgba(99, 102, 241, 0.6);
+  flex-shrink: 0;
+}
+
+/* ─── Bio paragraphs */
+.about-bio {
+  display: flex;
+  flex-direction: column;
+  /* More gap so the two paragraphs breathe properly */
+  gap: clamp(24px, 4vh, 40px);
+}
+
+.about-bio-para {
+  font-family: 'Satoshi', sans-serif;
+  font-size: clamp(0.92rem, 1.5vw, 1.1rem);
+  font-weight: 400;
+  /* Increased line-height gives each paragraph more vertical space */
+  line-height: 2;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0;
+  opacity: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RIGHT COLUMN — education eyebrow + timeline
+   ═══════════════════════════════════════════════════════════ */
+.about-right {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  /* Left padding so content has breathing room from the divider */
+  padding-left: clamp(16px, 2vw, 32px);
+}
+
+/* ─── Timeline */
+.about-edu__timeline {
+  display: flex;
+  flex-direction: column;
+}
+
+.about-edu__item {
+  display: grid;
+  grid-template-columns: 90px 1px 1fr;
+  gap: 0 20px;
+  /* More breathing room between education entries */
+  padding-bottom: clamp(44px, 6vh, 64px);
+  opacity: 0;
+}
+.about-edu__item:last-child {
+  padding-bottom: 0;
+}
+
+.about-edu__year {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  white-space: nowrap;
+  letter-spacing: 0.08em;
+   color: rgba(255, 255, 255, 0.5);
+  text-align: right;
+  padding-top: 4px;
+  line-height: 1.5;
+}
+
+/* Timeline stem + dot */
+.about-edu__line {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.about-edu__line::after {
+  content: '';
+  flex: 1;
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    rgba(99, 102, 241, 0.5),
+    rgba(99, 102, 241, 0.04)
+  );
+  margin-top: 10px;
+}
+.about-edu__item:last-child .about-edu__line::after {
+  display: none;
+}
+.about-edu__dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #6366f1;
+  box-shadow:
+    0 0 0 3px rgba(99, 102, 241, 0.2),
+    0 0 14px rgba(99, 102, 241, 0.5);
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+
+/* Content */
+.about-edu__content {
+  position: relative;
+}
+.about-edu__school {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(1rem, 1.8vw, 1.5rem);
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #fff;
+  line-height: 1.05;
+  margin-bottom: 5px;
+}
+.about-edu__degree {
+   font-size: clamp(0.92rem, 1.5vw, 1.1rem);
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.38);
+  line-height: 1.6;
+}
+.about-edu__badge {
+  display: inline-block;
+  margin-top: 8px;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.22rem 0.64rem;
+  border-radius: 999px;
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  color: rgba(99, 102, 241, 0.75);
+  background: rgba(99, 102, 241, 0.07);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .about-columns {
+    /* Stack vertically on tablet/mobile */
+    grid-template-columns: 1fr;
+    gap: 40px 0;
+  }
+  .about-divider {
+    display: none;
+  }
+  .about-left {
+    padding-right: 0;
+  }
+  .about-right {
+    padding-left: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    padding-top: 32px;
+  }
+  .about-edu__item {
+    grid-template-columns: 80px 1px 1fr;
+    gap: 0 16px;
+  }
+}
+@media (max-width: 520px) {
+  .about-edu__item {
+    grid-template-columns: 1px 1fr;
+    gap: 0 12px;
+  }
+  .about-edu__year {
+    grid-column: 1 / -1;
+    text-align: left;
+    font-size: 0.58rem;
+    padding-top: 0;
+    padding-bottom: 6px;
+  }
+  .about-edu__line {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .about-edu__content {
+    grid-column: 2;
+    grid-row: 2;
+  }
+}
