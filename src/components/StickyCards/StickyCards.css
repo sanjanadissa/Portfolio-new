@@ -334,6 +334,7 @@
   .sc-card {
     width: calc(100% - 1rem);
     height: 60%;
+    top: 45%;   /* pull card higher — removes large empty gap above on mobile */
   }
 
   .sc-card-inner {
@@ -406,6 +407,7 @@
   .sc-card {
     width: calc(100% - 1rem);
     height: 55%;
+    top: 42%;   /* pull card further up on small phones */
   }
 
   .sc-card-inner {
