@@ -89,9 +89,9 @@ function TestimonialImageCard({
         borderRadius: "24px",
         overflow: "hidden",
         position: "relative",
-        boxShadow: isHovered
-          ? "0 32px 80px rgba(0,0,0,0.38)"
-          : "0 8px 32px rgba(0,0,0,0.22)",
+        // boxShadow: isHovered
+        //   ? "0 32px 80px rgba(0,0,0,0.38)"
+        //   : "0 8px 32px rgba(0,0,0,0.22)",
         transition: "box-shadow 0.35s ease",
       }}
     >
