@@ -17,7 +17,7 @@ export class StarsBackground {
   private ctx: CanvasRenderingContext2D;
   private stars: Star[] = [];
   private starDensity: number;
-  private rotationSpeed: number = 0.00025;
+  private rotationSpeed: number = 0.00055;
   private time: number = 0;
   private center: { x: number; y: number } = { x: 0, y: 0 };
   private animationId?: number;
@@ -29,7 +29,7 @@ export class StarsBackground {
       throw new Error('Canvas context not available');
     }
     this.ctx = context;
-    this.starDensity = options.starDensity || 0.000065;
+    this.starDensity = options.starDensity || 0.00020;
 
     this.init();
     this.handleResize = this.handleResize.bind(this);
