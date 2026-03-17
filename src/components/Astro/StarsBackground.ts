@@ -17,7 +17,7 @@ export class StarsBackground {
   private ctx: CanvasRenderingContext2D;
   private stars: Star[] = [];
   private starDensity: number;
-  private rotationSpeed: number = 0.00055;
+  private rotationSpeed: number = 0.00025;
   private time: number = 0;
   private center: { x: number; y: number } = { x: 0, y: 0 };
   private animationId?: number;
@@ -29,7 +29,7 @@ export class StarsBackground {
       throw new Error('Canvas context not available');
     }
     this.ctx = context;
-    this.starDensity = options.starDensity || 0.00020;
+    this.starDensity = options.starDensity || 0.000065;
 
     this.init();
     this.handleResize = this.handleResize.bind(this);
@@ -45,35 +45,36 @@ export class StarsBackground {
     const rect = this.canvas.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
 
-    // Fallback to window dimensions in case the canvas hasn't laid out yet
-    const w = rect.width > 0 ? rect.width : window.innerWidth;
-    const h = rect.height > 0 ? rect.height : window.innerHeight;
+    this.canvas.width = rect.width * dpr;
+    this.canvas.height = rect.height * dpr;
 
-    this.canvas.width = w * dpr;
-    this.canvas.height = h * dpr;
-
-    this.canvas.style.width = `${w}px`;
-    this.canvas.style.height = `${h}px`;
+    this.canvas.style.width = `${rect.width}px`;
+    this.canvas.style.height = `${rect.height}px`;
 
     this.ctx.setTransform(1, 0, 0, 1, 0, 0);
     this.ctx.scale(dpr, dpr);
 
-    // Centre in the middle of the canvas so stars spread to all four corners
-    this.center = { x: w / 2, y: h / 2 };
+    // On mobile the pivot at the very bottom leaves the top of the screen
+    // without stars. Use the true center on narrow viewports so stars spread
+    // across the full canvas; keep bottom-center for desktop.
+    const isMobile = rect.width <= 768;
+    this.center = {
+      x: rect.width / 2,
+      y: isMobile ? rect.height / 2 : rect.height,
+    };
 
-    this.generateStars(w, h);
+    this.generateStars(rect.width, rect.height);
   }
 
   private generateStars(width: number, height: number): void {
-    // Use full diagonal so stars always cover every corner of the canvas
-    const maxRadius = Math.sqrt(width ** 2 + height ** 2) / 1.2;
+    const maxRadius = Math.sqrt(width ** 2 + height ** 2) / 1.5;
     const area = Math.PI * maxRadius * maxRadius;
     const numStars = Math.floor(area * this.starDensity * 1.5);
 
     this.stars = [];
     for (let i = 0; i < numStars; i++) {
       const angle = Math.random() * Math.PI * 2;
-      const radius = Math.sqrt(Math.random()) * maxRadius; // even distribution in area
+      const radius = Math.sqrt(Math.random()) * maxRadius; // fix: even distribution in area
       this.stars.push({
         angle,
         radius,

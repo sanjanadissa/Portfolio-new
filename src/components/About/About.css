@@ -8,6 +8,25 @@
   background: #000000;
   color: #fff;
   overflow: hidden;
+  /* Subtle purple top border — separates section from hero */
+  border-top: 1px solid rgba(132, 0, 255, 0.25);
+}
+
+/* Top-only glow: a gradient that fades from purple → transparent downward */
+.about-section::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 70px;           /* depth of the glow band */
+  background: linear-gradient(
+    to bottom, 
+    rgba(132, 0, 255, 0.18) 0%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 0;
 }
 
 /* Grain texture overlay */
