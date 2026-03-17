@@ -23,7 +23,6 @@
 }
 
 /* ── Three.js canvas ───────────────────────────── */
-/* z-index:2 — canvas (ghost) renders ABOVE the quote text (z:1)           */
 .spectral-section canvas {
   position: absolute;
   top: 0;
@@ -36,22 +35,15 @@
 }
 
 /* ── Cream transition overlay ──────────────────── */
-/* z-index:3 — sits above canvas (z:2) so it can cover the dark Three.js
-   scene during the colour transition. GSAP drives it through two phases:
-   Phase 1: backgroundColor cream→black (solid, no canvas bleed-through)
-   Phase 2: opacity 1→0 (reveals ghost on the now-black background)         */
 .spectral-color-overlay {
   position: absolute;
   inset: 0;
   z-index: 3;
-  background-color: #EEE8DC; /* matches TestimonialCards  - GSAP takes over */
-  pointer-events: none;       /* mouse events pass through to canvas below   */
+  background-color: #EEE8DC;
+  pointer-events: none;
 }
 
 /* ── Quote text ────────────────────────────────── */
-/* z-index:1 — BELOW the canvas (z:2) so the ghost renders on top of text. */
-/* The canvas preserves alpha in transparent areas, letting text show       */
-/* through wherever the Three.js scene is not painting solid pixels.        */
 .spectral-content {
   position: absolute;
   top: 0;
@@ -92,12 +84,33 @@
   margin-top: 2vh;
 }
 
-/* ── Footer (structured, no extra scroll) ───────────────────────────────────── */
+/* ── Mobile: shrink canvas to match the smaller Three.js ghost ── */
+/* The ghost radius is 1.2 (vs 2 on desktop). We scale the canvas  */
+/* container down so the ghost fills a natural portion of the       */
+/* screen and the browser composites a smaller texture — less GPU.  */
+@media (max-width: 768px) {
+  .spectral-section canvas {
+    /* Scale the rendered canvas down visually without resizing the
+       WebGL back-buffer (that is handled in JS). This keeps the ghost
+       visually centred while consuming less fill-rate. */
+    transform-origin: center center;
+  }
 
-/* ── Footer bg wrapper – scrolls over the pinned SpectralGhost ── */
+  /* Shrink the quote text so it doesn't clash with the smaller ghost */
+  .spectral-quote {
+    font-size: 11vw;
+    margin-bottom: 3vh;
+  }
+
+  .spectral-author {
+    font-size: 13px;
+  }
+}
+
+/* ── Footer bg wrapper ───────────────────────────────────────────────── */
 .spectral-footer-bg {
   position: relative;
-  z-index: 5;          /* above the pinned canvas (z-index:2) */
+  z-index: 5;
   width: 100%;
   background: #000;
 }
@@ -110,12 +123,10 @@
   color: rgba(255, 255, 255, 0.8);
   overflow: hidden;
 
-  /* left corner large radius, right corner sharp – matches reference */
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   border-top-left-radius: 80px;
   border-top-right-radius: 0px;
 
-  /* very subtle radial glow behind the top edge */
   background-image: radial-gradient(
     30% 80px at 50% 0%,
     rgba(255, 255, 255, 0.05),
@@ -129,12 +140,11 @@
   padding: 48px 24px 56px;
 }
 
-/* short bright capsule at the very top center — the glowing pill seen in the reference */
 .spectral-footer-highlight {
   position: absolute;
   top: 0;
   left: 50%;
-  width: 12%;          /* narrow capsule, not spanning the full width */
+  width: 12%;
   min-width: 120px;
   max-width: 200px;
   height: 2px;
@@ -145,8 +155,6 @@
   box-shadow: 0 0 8px 2px rgba(255, 255, 255, 0.35);
 }
 
-
-/* left column */
 .spectral-footer-brand {
   display: flex;
   flex-direction: column;
@@ -168,14 +176,6 @@
   text-transform: uppercase;
   opacity: 0.7;
 }
-
-/* link groups */
-/* .spectral-footer-columns {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 32px;
-  margin-top: 24px;
-} */
 
 .spectral-footer-section-title {
   font-family: "PPSupplyMono", monospace;
@@ -208,12 +208,10 @@
   color: rgba(255, 255, 255, 0.95);
 }
 
-/* ── Marquee menu spacing ──────────────────────── */
 .fmq__menu {
   padding-top: 40px;
 }
 
-/* large faded word below (keeps the vibe but doesn't affect layout height much) */
 .spectral-footer-ghost {
   position: absolute;
   left: 0;
@@ -245,7 +243,6 @@
 }
 
 @media (min-width: 1280px) {
-  
   .spectral-footer-columns {
     margin-top: 0;
   }
