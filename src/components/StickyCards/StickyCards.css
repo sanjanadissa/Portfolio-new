@@ -125,7 +125,7 @@
 .sc-text-section {
   display: flex;
   flex-direction: column;
-  gap: 3.5rem;
+  gap: 1.5rem;
   justify-content: flex-start;
 }
 
@@ -180,7 +180,7 @@
 
 .sc-image-wrapper {
   position: relative;
-  width: 100%;
+  width: 94%;
   height: 94%;
   border-radius: 1rem;
   overflow: hidden;

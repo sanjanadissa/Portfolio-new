@@ -6,7 +6,7 @@ import TextReveal from '../TextReveal/TextReveal';
 import img1 from '../../assets/codemart.webp';
 import img2 from '../../assets/troud2.jpg';
 import img3 from '../../assets/wisper.webp';
-import img4 from '../../assets/hr.webp';
+import img4 from '../../assets/hr.png';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -232,8 +232,8 @@ const StickyCards = () => {
                     <p className="sc-desc">{proj.description}</p>
 
                     <ul className="sc-tech-list">
-                      {proj.tech.map((t) => (
-                        <li key={t} className="sc-tech-pill">
+                      {proj.tech.map((t, techIndex) => (
+                        <li key={`${proj.id}-${techIndex}`} className="sc-tech-pill">
                           {t}
                         </li>
                       ))}

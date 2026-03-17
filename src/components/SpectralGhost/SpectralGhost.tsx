@@ -645,6 +645,7 @@ const SpectralGhost = () => {
         const idx = (frameCount + i) % activeParticles.length;
         if (idx >= activeParticles.length) continue;
         const p = activeParticles[idx];
+        if (!p || !p.userData) continue;
         p.userData.life -= p.userData.decay;
         (p.material as THREE.MeshBasicMaterial).opacity = p.userData.life * 0.85;
 

@@ -154,10 +154,15 @@ export default function MarqueeHover() {
   return (
     <div className="mh-wrap">
       {ITEMS.map((item, i) => (
-        <MarqueeItem key={item.label} {...item} paddingTop={i === 0 ? "15px" : undefined} />
+        <MarqueeItem
+          key={item.label}
+          {...item}
+          paddingTop={i === 0 ? '15px' : undefined}
+        />
       ))}
+      {/* Footer email pill uses the same simple mailto URL */}
       <a
-       href="mailto:sanjanadissanayake22@gmail.com?subject=Portfolio%20Contact&body=Hi%20Sanjana,%20I%20saw%20your%20portfolio..."
+        href="mailto:sanjanadissanayake22@gmail.com"
         className="mh-pill mh-pill--email"
       >
         sanjanadissanayake22@gmail.com

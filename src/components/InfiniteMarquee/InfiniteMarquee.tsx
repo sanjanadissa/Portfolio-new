@@ -58,7 +58,7 @@ const MarqueeRow = ({ items, direction = 'left', speed = 40, dark = false }: Mar
         <div className="marquee-text" ref={contentRef}>
           {items.map((item, i) => (
             <span key={i} className="marquee-item">
-              <span className="marquee-bullet">•</span>
+              <span className="marquee-bullet">✦</span>
               {' '}{item.text}
               <span className="marquee-accent">{item.accent}</span>
             </span>
