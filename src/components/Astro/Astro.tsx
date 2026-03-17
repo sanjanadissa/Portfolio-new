@@ -27,12 +27,21 @@ const HelmetRevealAnimation: React.FC = () => {
 
   useEffect(() => {
     let starsInstance: StarsBackground | null = null;
+    let rafId: number;
 
     if (starsCanvasRef.current) {
       starsInstance = new StarsBackground(starsCanvasRef.current);
+
+      // On mobile the canvas may have 0 dimensions on the first synchronous paint.
+      // Fire a resize event after the browser has completed its first layout pass
+      // so the star field re-calculates with the correct dimensions.
+      rafId = requestAnimationFrame(() => {
+        window.dispatchEvent(new Event('resize'));
+      });
     }
 
     return () => {
+      cancelAnimationFrame(rafId);
       if (starsInstance) {
         starsInstance.destroy();
       }

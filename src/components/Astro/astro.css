@@ -1,182 +1,183 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-            * {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-        }
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: auto;
+  overflow-x: hidden;
+}
 
-        html, body {
-          margin: 0;
-          padding: 0;
-          width: 100%;
-          height: auto;
-          overflow-x: hidden;
-        }
+#root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
 
-        #root {
-          margin: 0;
-          padding: 0;
-          width: 100%;
-          min-height: 100vh;
-        }
-       
-       @keyframes pulse {
-          0%, 100% { opacity: 0.7; }
-          50% { opacity: 1; }
-        }
+@keyframes pulse {
+  0%, 100% { opacity: 0.7; }
+  50%       { opacity: 1;   }
+}
 
-       .container {
+.container {
   position: relative;
   height: 100vh;
+  height: 100dvh;
   width: 100%;
   overflow-x: hidden;
-  /* Promote to GPU layer to prevent scroll-repaint stutter */
   will-change: transform;
   transform: translateZ(0);
 }
 
+.stars-canvas,
+.shooting-stars-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  will-change: transform;
+}
 
-        .stars-canvas,
-        .shooting-stars-svg {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          pointer-events: none;
-          z-index: 0;
-          will-change: transform;
-        }
 .image-wrapper {
   position: sticky;
   top: 0;
   height: 100vh;
+  height: 100dvh;
   display: flex;
-  align-items: flex-end;     /* 👈 Push to bottom */
-  justify-content: center;   /* 👈 Center horizontally */
+  align-items: flex-end;
+  justify-content: center;
   overflow: hidden;
 }
 
+.image-stack {
+  position: relative;
+  width: min(100vw, 900px);
+  height: 100vh;
+  height: 100dvh;
+  max-height: 85%;
+  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.5));
+  overflow: hidden;
+  border-radius: 15px;
+}
 
-        .image-stack {
-          position: relative;
-          width: min(100vw, 900px);
-          height: 100vh;
-          max-height:85%;
-          filter: drop-shadow(0 20px 40px rgba(0,0,0,0.5));
-          overflow: hidden;
-          border-radius: 15px;
-        }
+.image-stack img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 15px;
+}
 
-        .image-stack img {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: auto;
-          display: block;
-          border-radius: 15px;
-        }
+.bottom-image {
+  z-index: 1;
+}
 
-        .bottom-image {
-          z-index: 1;
-        }
+.top-image {
+  z-index: 2;
+  clip-path: polygon(0% 0%, 110% 0%, 100% 100%, 0% 100%);
+  transition: clip-path 0.1s ease-out;
+}
 
-        .top-image {
-          z-index: 2;
-          clip-path: polygon(0% 0%,110% 0%, 100% 100%, 0% 100%);
-          transition: clip-path 0.1s ease-out;
-        }
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .image-wrapper {
+    overflow: visible;
+    height: 100dvh;
+    align-items: flex-end;   /* keep image pinned to bottom */
+  }
 
-        @media (max-width: 768px) {
-          .image-wrapper {
-            overflow: visible;
-          }
+  .image-stack {
+    position: relative;
+    width: 85vw;
+    height: auto;
+    max-height: 85dvh;       /* cap so top of image stays visible */
+    overflow: visible;
+  }
 
-          .image-stack {
-            position: relative;
-            width: 85vw;
-            height: auto;
-            max-height: none;
-            overflow: visible;
-          }
+  /* override the global .image-stack img rule for mobile */
+  .image-stack .mobile-hero-img {
+    position: relative;
+    top: auto;
+    left: auto;
+    width: 100%;
+    height: auto;
+    max-height: 85dvh;
+    object-fit: contain;
+    object-position: bottom; /* anchor image to bottom — shoulders always visible */
+    display: block;
+    border-radius: 15px;
+  }
 
-          /* override the global .image-stack img rule for mobile */
-          .image-stack .mobile-hero-img {
-            position: relative;
-            top: auto;
-            left: auto;
-            width: 100%;
-            height: auto;
-            object-fit: contain;
-            display: block;
-            border-radius: 15px;
-          }
+  .title {
+    left: 20px;
+    font-size: clamp(20px, 6vw, 36px);
+  }
+}
 
-          .title {
-            left: 20px;
-            font-size: clamp(20px, 6vw, 36px);
-          }
-        }
+/* ── Mobile static hero image fallback ── */
+.mobile-hero-img {
+  border-radius: 15px;
+}
 
-        /* ── Mobile static hero image fallback ── */
-        /* Note: actual mobile overrides are in the @media block above
-           to beat the specificity of .image-stack img */
-        .mobile-hero-img {
-          border-radius: 15px;
-        }
+.top-left-btn {
+  position: absolute;
+  top: 24px;
+  left: 20px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+}
 
-        .top-left-btn {
-          position: absolute;
-          top: 24px;
-          left: 20px;
-          z-index: 1000;
-          display: flex;
-          align-items: center;
-        }
+.top-left-btn h2 {
+  border: none;
+  color: white;
+  padding: 0;
+  font-size: 16px;
+  font-family: 'Bitcount Prop Single';
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  margin: 0;
+  line-height: 1;
+}
 
-        .top-left-btn h2 {
-          border: none;
-          color: white;
-          padding: 0;
-          font-size: 16px;
-          font-family: 'Bitcount Prop Single';
-          cursor: pointer;
-          transition: transform 0.2s ease;
-          margin: 0;
-          line-height: 1;
-        }
+.top-left-btn .mysign:hover {
+  cursor: pointer;
+}
 
-        .top-left-btn .mysign:hover {
-          cursor: pointer;
-        }
+.scrolling-text {
+  position: absolute;
+  top: 40%;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  z-index: 0;
+  pointer-events: none;
+}
 
-        .scrolling-text {
-          position: absolute;
-          top: 40%;
-          left: 0;
-          width: 100%;
-          overflow: hidden;
-          white-space: nowrap;
-          z-index: 0;
-          pointer-events: none;
-        }
+.scrolling-text span {
+  display: inline-block;
+  font-family: 'Audiowide', cursive;
+  font-size: 20vw;
+  top: 70vh;
+  color: white;
+  opacity: 0.7;
+  animation: scroll-left 14s linear infinite;
+}
 
-        .scrolling-text span {
-          display: inline-block;
-          font-family: 'Audiowide', cursive;
-          font-size: 20vw;
-          top: 70vh;
-          color: white;
-          opacity: 0.7;
-          animation: scroll-left 14s linear infinite;
-        }
-
-        @keyframes scroll-left {
-          0% {
-            transform: translateX(35%);
-          }
-          100% {
-            transform: translateX(-100%);
-          }
-        }
+@keyframes scroll-left {
+  0%   { transform: translateX(35%);   }
+  100% { transform: translateX(-100%); }
+}

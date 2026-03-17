@@ -45,38 +45,44 @@ export class StarsBackground {
     const rect = this.canvas.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
 
-    this.canvas.width = rect.width * dpr;
-    this.canvas.height = rect.height * dpr;
+    // Fallback to window dimensions in case the canvas hasn't laid out yet
+    const w = rect.width > 0 ? rect.width : window.innerWidth;
+    const h = rect.height > 0 ? rect.height : window.innerHeight;
 
-    this.canvas.style.width = `${rect.width}px`;
-    this.canvas.style.height = `${rect.height}px`;
+    this.canvas.width = w * dpr;
+    this.canvas.height = h * dpr;
+
+    this.canvas.style.width = `${w}px`;
+    this.canvas.style.height = `${h}px`;
 
     this.ctx.setTransform(1, 0, 0, 1, 0, 0);
     this.ctx.scale(dpr, dpr);
 
-    this.center = { x: rect.width / 2, y: rect.height };
+    // Centre in the middle of the canvas so stars spread to all four corners
+    this.center = { x: w / 2, y: h / 2 };
 
-    this.generateStars(rect.width, rect.height);
+    this.generateStars(w, h);
   }
 
- private generateStars(width: number, height: number): void {
-  const maxRadius = Math.sqrt(width ** 2 + height ** 2) / 1.5;
-  const area = Math.PI * maxRadius * maxRadius;
-  const numStars = Math.floor(area * this.starDensity * 1.5);
+  private generateStars(width: number, height: number): void {
+    // Use full diagonal so stars always cover every corner of the canvas
+    const maxRadius = Math.sqrt(width ** 2 + height ** 2) / 1.2;
+    const area = Math.PI * maxRadius * maxRadius;
+    const numStars = Math.floor(area * this.starDensity * 1.5);
 
-  this.stars = [];
-  for (let i = 0; i < numStars; i++) {
-    const angle = Math.random() * Math.PI * 2;
-    const radius = Math.sqrt(Math.random()) * maxRadius; // fix: even distribution in area
-    this.stars.push({
-      angle,
-      radius,
-      size: Math.random() * 1.35 + 0.5,
-      baseOpacity: Math.random() * 0.5 + 0.6,
-      twinkleSpeed: 0.5 + Math.random() * 0.5
-    });
+    this.stars = [];
+    for (let i = 0; i < numStars; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const radius = Math.sqrt(Math.random()) * maxRadius; // even distribution in area
+      this.stars.push({
+        angle,
+        radius,
+        size: Math.random() * 1.35 + 0.5,
+        baseOpacity: Math.random() * 0.5 + 0.6,
+        twinkleSpeed: 0.5 + Math.random() * 0.5
+      });
+    }
   }
-}
 
   private animate = (): void => {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
