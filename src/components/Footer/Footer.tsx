@@ -1,4 +1,3 @@
-import React from "react";
 import "../SpectralGhost/SpectralGhost.css";
 import MarqueeHover from "./MarqueeHover";
 

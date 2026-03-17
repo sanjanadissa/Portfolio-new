@@ -161,12 +161,7 @@ export default function MarqueeHover() {
         />
       ))}
       {/* Footer email pill uses the same simple mailto URL */}
-      <a
-        href="mailto:sanjanadissanayake22@gmail.com"
-        className="mh-pill mh-pill--email"
-      >
-        sanjanadissanayake22@gmail.com
-      </a>
+   
     </div>
   );
 }
