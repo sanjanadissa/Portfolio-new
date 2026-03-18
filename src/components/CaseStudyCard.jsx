@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import GlassSurface from './GlassSurface';
-import cvPdf from "../../src/assets/CV.pdf";
+
 
 // ─── colour tokens ────────────────────────────────────────────────────────────
 // Text is always white — readable on both dark scenes and the cream background
@@ -259,7 +259,7 @@ const Navigation = () => {
 
             {/* Download CV */}
             <a
-              href={cvPdf}
+              href="/CV.pdf"
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => setMenuOpen(false)}

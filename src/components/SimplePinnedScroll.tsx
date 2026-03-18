@@ -4,7 +4,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import HelmetReveal from './Astro/Astro.tsx';
 import Preloader from './Preloader';
 import GlassSurface from './GlassSurface';
-import cvPdf from "../../src/assets/CV.pdf";
+
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -62,7 +62,7 @@ const SimplePinnedScroll = ({ onPreloaderDone, preloaderDone }: Props) => {
           style={{ padding: '12px 24px' }}
         >
           <a
-            href={cvPdf}
+            href="/CV.pdf"
              target="_blank"
              rel="noopener noreferrer"
             className="nav-menu-text text-sm text-gray-300 hover:text-white transition-colors duration-300 flex items-center gap-2 whitespace-nowrap"
