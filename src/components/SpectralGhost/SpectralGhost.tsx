@@ -193,6 +193,9 @@ const SpectralGhost = () => {
     const container = canvasContainerRef.current;
     if (!section || !container) return;
 
+    // ── Mobile detection ────────────────────────────────────────────────────
+    const isMobile = window.innerWidth <= 768;
+
     const width = section.offsetWidth;
     const height = section.offsetHeight;
 
@@ -367,9 +370,9 @@ const SpectralGhost = () => {
     rightOuter.position.set(0.7, 0.6, 1.95);
     ghostGroup.add(rightOuter);
 
-    // ── Fireflies ───────────────────────────────────────────────────────────
+    // ── Fireflies (desktop only) ────────────────────────────────────────────
     const fireflyGroup = new THREE.Group();
-    scene.add(fireflyGroup);
+    if (!isMobile) scene.add(fireflyGroup);
 
     interface FireflyData {
       velocity: THREE.Vector3;
@@ -381,39 +384,41 @@ const SpectralGhost = () => {
     }
 
     const fireflies: THREE.Mesh[] = [];
-    for (let i = 0; i < 20; i++) {
-      const fMat = new THREE.MeshBasicMaterial({ color: 0xffff44, transparent: true, opacity: 0.9 });
-      const firefly = new THREE.Mesh(new THREE.SphereGeometry(0.02, 2, 2), fMat);
-      firefly.position.set(
-        (Math.random() - 0.5) * 40,
-        (Math.random() - 0.5) * 30,
-        (Math.random() - 0.5) * 20,
-      );
+    if (!isMobile) {
+      for (let i = 0; i < 20; i++) {
+        const fMat = new THREE.MeshBasicMaterial({ color: 0xffff44, transparent: true, opacity: 0.9 });
+        const firefly = new THREE.Mesh(new THREE.SphereGeometry(0.02, 2, 2), fMat);
+        firefly.position.set(
+          (Math.random() - 0.5) * 40,
+          (Math.random() - 0.5) * 30,
+          (Math.random() - 0.5) * 20,
+        );
 
-      const glowMat = new THREE.MeshBasicMaterial({ color: 0xffff88, transparent: true, opacity: 0.4, side: THREE.BackSide });
-      firefly.add(new THREE.Mesh(new THREE.SphereGeometry(0.08, 8, 8), glowMat));
+        const glowMat = new THREE.MeshBasicMaterial({ color: 0xffff88, transparent: true, opacity: 0.4, side: THREE.BackSide });
+        firefly.add(new THREE.Mesh(new THREE.SphereGeometry(0.08, 8, 8), glowMat));
 
-      const fLight = new THREE.PointLight(0xffff44, 0.8, 3, 2);
-      firefly.add(fLight);
+        const fLight = new THREE.PointLight(0xffff44, 0.8, 3, 2);
+        firefly.add(fLight);
 
-      (firefly.userData as FireflyData) = {
-        velocity: new THREE.Vector3(
-          (Math.random() - 0.5) * params.fireflySpeed,
-          (Math.random() - 0.5) * params.fireflySpeed,
-          (Math.random() - 0.5) * params.fireflySpeed,
-        ),
-        phase: Math.random() * Math.PI * 2,
-        pulseSpeed: 2 + Math.random() * 3,
-        glowMaterial: glowMat,
-        fireflyMaterial: fMat,
-        light: fLight,
-      };
+        (firefly.userData as FireflyData) = {
+          velocity: new THREE.Vector3(
+            (Math.random() - 0.5) * params.fireflySpeed,
+            (Math.random() - 0.5) * params.fireflySpeed,
+            (Math.random() - 0.5) * params.fireflySpeed,
+          ),
+          phase: Math.random() * Math.PI * 2,
+          pulseSpeed: 2 + Math.random() * 3,
+          glowMaterial: glowMat,
+          fireflyMaterial: fMat,
+          light: fLight,
+        };
 
-      fireflyGroup.add(firefly);
-      fireflies.push(firefly);
+        fireflyGroup.add(firefly);
+        fireflies.push(firefly);
+      }
     }
 
-    // ── Particle system ─────────────────────────────────────────────────────
+    // ── Particle system (desktop only) ──────────────────────────────────────
     const particleGeometries = [
       new THREE.SphereGeometry(0.05, 6, 6),
       new THREE.TetrahedronGeometry(0.04, 0),
@@ -427,21 +432,24 @@ const SpectralGhost = () => {
     });
 
     const particleGroupObj = new THREE.Group();
-    scene.add(particleGroupObj);
+    if (!isMobile) scene.add(particleGroupObj);
 
     const particlePool: THREE.Mesh[] = [];
     const activeParticles: THREE.Mesh[] = [];
 
-    // Pre-fill pool
-    for (let i = 0; i < 100; i++) {
-      const gIdx = Math.floor(Math.random() * particleGeometries.length);
-      const p = new THREE.Mesh(particleGeometries[gIdx], particleBaseMaterial.clone());
-      p.visible = false;
-      particleGroupObj.add(p);
-      particlePool.push(p);
+    if (!isMobile) {
+      // Pre-fill pool
+      for (let i = 0; i < 100; i++) {
+        const gIdx = Math.floor(Math.random() * particleGeometries.length);
+        const p = new THREE.Mesh(particleGeometries[gIdx], particleBaseMaterial.clone());
+        p.visible = false;
+        particleGroupObj.add(p);
+        particlePool.push(p);
+      }
     }
 
     function spawnParticle() {
+      if (isMobile) return;
       let p: THREE.Mesh | undefined;
       if (particlePool.length > 0) {
         p = particlePool.pop()!;
@@ -483,8 +491,10 @@ const SpectralGhost = () => {
       activeParticles.push(p);
     }
 
-    // Initial particles
-    for (let i = 0; i < 10; i++) spawnParticle();
+    // Initial particles (desktop only)
+    if (!isMobile) {
+      for (let i = 0; i < 10; i++) spawnParticle();
+    }
 
     // ── Mouse tracking (scoped to section) ──────────────────────────────────
     const mouse = new THREE.Vector2(0, 0);
@@ -584,22 +594,24 @@ const SpectralGhost = () => {
       const breathe = Math.sin(time * 0.6) * 0.12;
       ghostMaterial.emissiveIntensity = params.emissiveIntensity + pulse1 + breathe;
 
-      // Fireflies
-      fireflies.forEach((ff) => {
-        const ud = ff.userData as FireflyData;
-        const pulse = Math.sin(time + ud.phase * ud.pulseSpeed) * 0.4 + 0.6;
-        ud.glowMaterial.opacity = params.fireflyGlowIntensity * 0.4 * pulse;
-        ud.fireflyMaterial.opacity = params.fireflyGlowIntensity * 0.9 * pulse;
-        ud.light.intensity = params.fireflyGlowIntensity * 0.8 * pulse;
-        ud.velocity.x += (Math.random() - 0.5) * 0.001;
-        ud.velocity.y += (Math.random() - 0.5) * 0.001;
-        ud.velocity.z += (Math.random() - 0.5) * 0.001;
-        ud.velocity.clampLength(0, params.fireflySpeed);
-        ff.position.add(ud.velocity);
-        if (Math.abs(ff.position.x) > 30) ud.velocity.x *= -0.5;
-        if (Math.abs(ff.position.y) > 20) ud.velocity.y *= -0.5;
-        if (Math.abs(ff.position.z) > 15) ud.velocity.z *= -0.5;
-      });
+      // Fireflies (desktop only)
+      if (!isMobile) {
+        fireflies.forEach((ff) => {
+          const ud = ff.userData as FireflyData;
+          const pulse = Math.sin(time + ud.phase * ud.pulseSpeed) * 0.4 + 0.6;
+          ud.glowMaterial.opacity = params.fireflyGlowIntensity * 0.4 * pulse;
+          ud.fireflyMaterial.opacity = params.fireflyGlowIntensity * 0.9 * pulse;
+          ud.light.intensity = params.fireflyGlowIntensity * 0.8 * pulse;
+          ud.velocity.x += (Math.random() - 0.5) * 0.001;
+          ud.velocity.y += (Math.random() - 0.5) * 0.001;
+          ud.velocity.z += (Math.random() - 0.5) * 0.001;
+          ud.velocity.clampLength(0, params.fireflySpeed);
+          ff.position.add(ud.velocity);
+          if (Math.abs(ff.position.x) > 30) ud.velocity.x *= -0.5;
+          if (Math.abs(ff.position.y) > 20) ud.velocity.y *= -0.5;
+          if (Math.abs(ff.position.z) > 15) ud.velocity.z *= -0.5;
+        });
+      }
 
       // Ghost tilt
       const mouseDir = new THREE.Vector2(
@@ -628,44 +640,46 @@ const SpectralGhost = () => {
       leftOuterMat.opacity = newOpacity * 0.3;
       rightOuterMat.opacity = newOpacity * 0.3;
 
-      // Particles
-      const normSpeed = Math.sqrt(mouseSpeed.x ** 2 + mouseSpeed.y ** 2) * 8;
-      const shouldSpawn = params.createParticlesOnlyWhenMoving
-        ? currentMovement > 0.005 && isMouseMoving
-        : currentMovement > 0.005;
+      // Particles (desktop only)
+      if (!isMobile) {
+        const normSpeed = Math.sqrt(mouseSpeed.x ** 2 + mouseSpeed.y ** 2) * 8;
+        const shouldSpawn = params.createParticlesOnlyWhenMoving
+          ? currentMovement > 0.005 && isMouseMoving
+          : currentMovement > 0.005;
 
-      if (shouldSpawn && timestamp - lastParticleTime > 100) {
-        const rate = Math.min(params.particleCreationRate, Math.max(1, Math.floor(normSpeed * 3)));
-        for (let i = 0; i < rate; i++) spawnParticle();
-        lastParticleTime = timestamp;
-      }
-
-      const pCount = Math.min(activeParticles.length, 60);
-      for (let i = 0; i < pCount; i++) {
-        const idx = (frameCount + i) % activeParticles.length;
-        if (idx >= activeParticles.length) continue;
-        const p = activeParticles[idx];
-        if (!p || !p.userData) continue;
-        p.userData.life -= p.userData.decay;
-        (p.material as THREE.MeshBasicMaterial).opacity = p.userData.life * 0.85;
-
-        if (p.userData.velocity) {
-          p.position.x += p.userData.velocity.x;
-          p.position.y += p.userData.velocity.y;
-          p.position.z += p.userData.velocity.z;
-          p.position.x += Math.cos(time * 1.8 + p.position.y) * 0.0008;
+        if (shouldSpawn && timestamp - lastParticleTime > 100) {
+          const rate = Math.min(params.particleCreationRate, Math.max(1, Math.floor(normSpeed * 3)));
+          for (let i = 0; i < rate; i++) spawnParticle();
+          lastParticleTime = timestamp;
         }
-        if (p.userData.rotationSpeed) {
-          p.rotation.x += p.userData.rotationSpeed.x;
-          p.rotation.y += p.userData.rotationSpeed.y;
-          p.rotation.z += p.userData.rotationSpeed.z;
-        }
-        if (p.userData.life <= 0) {
-          p.visible = false;
-          (p.material as THREE.MeshBasicMaterial).opacity = 0;
-          particlePool.push(p);
-          activeParticles.splice(idx, 1);
-          i--;
+
+        const pCount = Math.min(activeParticles.length, 60);
+        for (let i = 0; i < pCount; i++) {
+          const idx = (frameCount + i) % activeParticles.length;
+          if (idx >= activeParticles.length) continue;
+          const p = activeParticles[idx];
+          if (!p || !p.userData) continue;
+          p.userData.life -= p.userData.decay;
+          (p.material as THREE.MeshBasicMaterial).opacity = p.userData.life * 0.85;
+
+          if (p.userData.velocity) {
+            p.position.x += p.userData.velocity.x;
+            p.position.y += p.userData.velocity.y;
+            p.position.z += p.userData.velocity.z;
+            p.position.x += Math.cos(time * 1.8 + p.position.y) * 0.0008;
+          }
+          if (p.userData.rotationSpeed) {
+            p.rotation.x += p.userData.rotationSpeed.x;
+            p.rotation.y += p.userData.rotationSpeed.y;
+            p.rotation.z += p.userData.rotationSpeed.z;
+          }
+          if (p.userData.life <= 0) {
+            p.visible = false;
+            (p.material as THREE.MeshBasicMaterial).opacity = 0;
+            particlePool.push(p);
+            activeParticles.splice(idx, 1);
+            i--;
+          }
         }
       }
 
@@ -703,78 +717,54 @@ const SpectralGhost = () => {
   }, []);
 
   // ── Colour transition: TestimonialCards cream → SpectralGhost dark ───────────
-  //
-  // TWO-PHASE APPROACH (fixes the gray-bleed mid-transition):
-  // ─────────────────────────────────────────────────────────────
-  // Phase 1 (scroll 0–65%): overlay stays fully opaque, backgroundColor goes
-  //   cream→black in sync with TestimonialCards and body. Because the overlay
-  //   covers the canvas at all times in this phase, the dark Three.js scene can
-  //   never bleed through and create a gray tint — seamless color match.
-  //
-  // Phase 2 (scroll 65–100%): overlay cross-fades transparent, revealing the
-  //   ghost scene on the now-black background. Ghost (canvas z:2) is above text
-  //   (z:1) so the ghost correctly renders on top of the quote text.
+  useEffect(() => {
+    const section = sectionRef.current;
+    const overlay = colorOverlayRef.current;
+    if (!section || !overlay) return;
 
-  // ── Colour transition: TestimonialCards cream → SpectralGhost dark ─────────
-// Uses the same technique as StickyCards → SkillBento:
-// a simple scrubbed bgTimeline that animates body + neighbour sections
-useEffect(() => {
-  const section = sectionRef.current;
-  const overlay = colorOverlayRef.current;
-  if (!section || !overlay) return;
+    const creamColor = 'rgb(238, 232, 220)';
+    const blackColor = 'rgb(0, 0, 0)';
 
-  const creamColor = 'rgb(238, 232, 220)';
-  const blackColor = 'rgb(0, 0, 0)';
+    const testimonialEl = document.querySelector('#events') as HTMLElement | null;
+    const prevBodyBg = document.body.style.backgroundColor;
 
-  const testimonialEl = document.querySelector('#events') as HTMLElement | null;
-  const prevBodyBg = document.body.style.backgroundColor;
+    gsap.set(document.body,  { backgroundColor: creamColor });
+    gsap.set(overlay,        { backgroundColor: creamColor, opacity: 1 });
+    if (testimonialEl) gsap.set(testimonialEl, { backgroundColor: creamColor });
 
-  // Start everyone at cream
-  gsap.set(document.body,  { backgroundColor: creamColor });
-  gsap.set(overlay,        { backgroundColor: creamColor, opacity: 1 });
-  if (testimonialEl) gsap.set(testimonialEl, { backgroundColor: creamColor });
+    const bgTimeline = gsap.timeline({
+      scrollTrigger: {
+        trigger: section,
+        start: 'top 60%',
+        end:   'top top',
+        scrub: 0.6,
+      },
+    });
 
-  // ── Single-pass transition: cream → black + overlay fade, all in one tight range ──
-  // Starts when the section top hits 60% of the viewport and ends when it
-  // reaches the very top. The bg colour + overlay opacity both animate together
-  // so the ghost is fully revealed the moment the section pins – no extra scroll.
-  const bgTimeline = gsap.timeline({
-    scrollTrigger: {
-      trigger: section,
-      start: 'top 60%',
-      end:   'top top',
-      scrub: 0.6,
-    },
-  });
+    bgTimeline
+      .to(document.body, { backgroundColor: blackColor, ease: 'none' }, 0)
+      .to(overlay, { backgroundColor: blackColor, ease: 'none' }, 0)
+      .to(overlay, { opacity: 0, ease: 'power1.in' }, 0.7);
 
-  bgTimeline
-    .to(document.body, { backgroundColor: blackColor, ease: 'none' }, 0)
-    // Phase 1: overlay colour cream → black (first 70% of the scroll range)
-    .to(overlay, { backgroundColor: blackColor, ease: 'none' }, 0)
-    // Phase 2: overlay opacity 1 → 0 (last 30% of the scroll range)
-    .to(overlay, { opacity: 0, ease: 'power1.in' }, 0.7);
+    if (testimonialEl) {
+      bgTimeline.to(testimonialEl, { backgroundColor: blackColor, ease: 'none' }, 0);
+    }
 
-  if (testimonialEl) {
-    bgTimeline.to(testimonialEl, { backgroundColor: blackColor, ease: 'none' }, 0);
-  }
+    bgTimeline
+      .to('.nav-glass-surface', { backgroundColor: 'rgba(255,255,255,0.08)', ease: 'none' }, 0);
 
-  // Nav transitions
-  bgTimeline
-    .to('.nav-glass-surface', { backgroundColor: 'rgba(255,255,255,0.08)', ease: 'none' }, 0);
-
-  return () => {
-    bgTimeline.scrollTrigger?.kill();
-    bgTimeline.kill();
-    gsap.set(document.body, { backgroundColor: prevBodyBg || '' });
-    gsap.set(overlay,       { clearProps: 'backgroundColor,opacity' });
-    if (testimonialEl) gsap.set(testimonialEl, { clearProps: 'backgroundColor' });
-    gsap.set('.nav-glass-surface', { clearProps: 'backgroundColor' });
-  };
-}, []);
+    return () => {
+      bgTimeline.scrollTrigger?.kill();
+      bgTimeline.kill();
+      gsap.set(document.body, { backgroundColor: prevBodyBg || '' });
+      gsap.set(overlay,       { clearProps: 'backgroundColor,opacity' });
+      if (testimonialEl) gsap.set(testimonialEl, { clearProps: 'backgroundColor' });
+      gsap.set('.nav-glass-surface', { clearProps: 'backgroundColor' });
+    };
+  }, []);
 
   const outerRef = useRef<HTMLDivElement>(null);
 
-  /* ── Pin the SpectralGhost section so footer scrolls over it ── */
   useEffect(() => {
     const outer = outerRef.current;
     if (!outer) return;
@@ -791,29 +781,18 @@ useEffect(() => {
     });
 
     return () => { pin.kill(); };
-  // run once after the main Ghost useEffect has set up its own triggers
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <div ref={outerRef}>
       <section className="spectral-section" ref={sectionRef} id="spectral">
-        {/* Three.js canvas mounts here (z-index:2) */}
         <div ref={canvasContainerRef} style={{ position: 'absolute', inset: 0 }} />
-
-        {/* ── Cream-to-transparent overlay (z-index:3, above canvas) ──────────
-             Starts as solid #EEE8DC so the section looks identical to the
-             TestimonialCards section above it. GSAP fades it to opacity:0 as
-             the section scrolls into view, revealing the dark Three.js scene. */}
         <div ref={colorOverlayRef} className="spectral-color-overlay" />
-
-        {/* Quote text (z-index:4, always above overlay and canvas) */}
         <div className="spectral-content" id="main-content">
           <div className="spectral-quote-container">
             <h1 className="spectral-quote">
-              Let’s Bring an <br />
+              Let's Bring an <br />
               Idea to Life
-              
             </h1>
             <span className="spectral-author">Got an idea to build? Reach out below.</span>
           </div>
