@@ -259,7 +259,7 @@ const Navigation = () => {
 
             {/* Download CV */}
             <a
-              href="./cv.pdf"
+              href={cvPdf}
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => setMenuOpen(false)}
