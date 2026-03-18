@@ -470,7 +470,7 @@ export default function TestimonialCards() {
           color: "rgba(30,20,10,0.5)",
           letterSpacing: "0.03em",
           textAlign: "center",
-          margin: "30px 35px",
+          margin: "0px 20px 40px",
            fontWeight: 500,
           
  
