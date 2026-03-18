@@ -76,7 +76,6 @@ const fanBase = [
 // ── Card Component ────────────────────────────────────────────────────────────
 function TestimonialImageCard({
   t,
-  isHovered = false,
 }: {
   t: (typeof testimonials)[0];
   isHovered?: boolean;
