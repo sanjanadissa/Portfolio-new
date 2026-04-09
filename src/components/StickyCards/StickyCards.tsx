@@ -26,7 +26,7 @@ const projects: Project[] = [
   {
     id: 'card-1',
     tag: 'Full-Stack',
-    title: '𝗖𝗼𝗱𝗲𝗠𝗮𝗿𝘁',
+    title: 'CODEMART',
     description: 'A full-stack marketplace platform connecting developers with innovative software projects.Features secure authentication, project browsing with advanced filtering, integrated payments, and a modern responsive interface built for seamless developer collaboration.',
     tech: ['REACT', 'ASP.NET', 'PostgreSQL', 'Supabase'],
     image: img1,
