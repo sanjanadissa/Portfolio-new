@@ -7,6 +7,7 @@ import img1 from '../../assets/codemart.webp';
 import img2 from '../../assets/troud2.jpg';
 import img3 from '../../assets/wisper.webp';
 import img4 from '../../assets/hr.png';
+import img5 from '../../assets/cura.png';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -35,6 +36,16 @@ const projects: Project[] = [
   {
     id: 'card-2',
     tag: 'Machine Learning',
+    title: 'CuraNex',
+    description: 'An AI-powered full-stack demand forecasting and inventory optimization platform designed for pharmaceutical supply chains. Features advanced time-series models, multi-horizon forecasting, anomaly detection, and intelligent reorder recommendations, supported by a scalable data pipeline, REST APIs, and an interactive dashboard for real-time analytics and decision-making.',
+    tech: ['React', 'FastAPI', 'XGBoost', 'LightGBM', 'PyTorch'],
+    image: img5,
+    color: '#1a1d29',
+    link: 'https://www.linkedin.com/posts/sanjana-dissanayake-b04963302_machinelearning-timeseriesforecasting-deeplearning-ugcPost-7447859313710407680-bZfJ?utm_source=share&utm_medium=member_desktop&rcm=ACoAAE1iTHQBbpUX8IAkfdMq4QHeytkqTSkcVR8',
+  },
+  {
+    id: 'card-3',
+    tag: 'Machine Learning',
     title: 'TROWD',
     description:
       'A real-time bus tracking and prediction system for Sri Lankan transit that combines machine learning, live GPS data, and crowd-sourced reports to estimate ETAs,confirm arrivals, and predict bus occupancy.',
@@ -44,7 +55,7 @@ const projects: Project[] = [
     link: 'https://github.com/Crowd-Based-Bus-Tracking-System',
   },
   {
-    id: 'card-3',
+    id: 'card-4',
     tag: 'Full-Stack',
     title: 'Whisper',
     description:
@@ -55,7 +66,7 @@ const projects: Project[] = [
     link: 'https://www.linkedin.com/posts/sanjana-dissanayake-b04963302_fullstackdevelopment-webdevelopment-realtimechat-activity-7364900389671874560-g_fD?utm_source=share&utm_medium=member_desktop&rcm=ACoAAE1iTHQBbpUX8IAkfdMq4QHeytkqTSkcVR8',
   },
   {
-    id: 'card-4',
+    id: 'card-5',
     tag: 'Desktop Application',
     title: 'HR-Management System',
     description:
