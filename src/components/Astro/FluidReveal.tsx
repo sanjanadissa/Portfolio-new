@@ -195,9 +195,9 @@ const FluidReveal: React.FC<FluidRevealProps> = ({
       }
     }
 
+    // Do NOT preventDefault — that blocks touch-scroll site-wide on mobile.
     function onTouchMove(event: TouchEvent) {
       if (event.touches.length > 0) {
-        event.preventDefault();
         const rect = canvas!.getBoundingClientRect();
         const tx = event.touches[0].clientX;
         const ty = event.touches[0].clientY;
@@ -230,7 +230,8 @@ const FluidReveal: React.FC<FluidRevealProps> = ({
     }
 
     window.addEventListener('mousemove', onMouseMove);
-    window.addEventListener('touchmove', onTouchMove, { passive: false });
+    // passive:true lets the browser scroll natively without waiting for JS
+    window.addEventListener('touchmove', onTouchMove, { passive: true });
     window.addEventListener('resize', onWindowResize);
 
     // ── Animation loop ─────────────────────────────────────────

@@ -175,13 +175,18 @@ body {
   display: inline-block;
   font-family: 'Audiowide', cursive;
   font-size: 20vw;
-  top: 70vh;
   color: white;
   opacity: 0.9;
-  animation: scroll-left 20s linear infinite;
+  /*
+   * linear = perfectly constant speed, no fast/slow variation.
+   * Starts off-screen RIGHT (100vw past its natural left edge).
+   * Ends off-screen LEFT  (-100% = its own width to the left).
+   * On loop reset both positions are invisible → snap is never seen.
+   */
+  animation: scroll-left 18s linear infinite;
 }
 
 @keyframes scroll-left {
-  0%   { transform: translateX(35%);   }
-  100% { transform: translateX(-100%); }
+  0%   { transform: translateX(100vw);  }
+  100% { transform: translateX(-100%);  }
 }

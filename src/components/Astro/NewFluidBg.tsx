@@ -131,13 +131,16 @@ const NewFluidBg: React.FC<NewFluidBgProps> = ({ config = {}, style, className }
     };
 
     const onMouseMove = (e: MouseEvent) => onMove(e.clientX, e.clientY);
+    // Do NOT preventDefault — that would block touch-scroll on mobile.
+    // Passive listener so the browser can scroll natively without waiting for JS.
     const onTouchMove = (e: TouchEvent) => {
-      e.preventDefault();
-      onMove(e.touches[0].clientX, e.touches[0].clientY);
+      if (e.touches.length > 0) {
+        onMove(e.touches[0].clientX, e.touches[0].clientY);
+      }
     };
 
     window.addEventListener('mousemove', onMouseMove);
-    window.addEventListener('touchmove', onTouchMove, { passive: false });
+    window.addEventListener('touchmove', onTouchMove, { passive: true });
 
     // ── Resize ─────────────────────────────────────────────────
     const onResize = () => {
