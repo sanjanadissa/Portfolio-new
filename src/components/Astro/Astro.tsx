@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { StarsBackground } from './StarsBackground';
 import FluidReveal from './FluidReveal';
+import NewFluidBg from './NewFluidBg';
 import mobileImg from '../../assets/withcolors.webp';
 import './astro.css';
 
@@ -57,13 +58,16 @@ const HelmetRevealAnimation: React.FC = () => {
       <div className="container" ref={containerRef}>
         <canvas className="stars-canvas" id="starsCanvas" ref={starsCanvasRef}></canvas>
 
+        {/* ── Scrolling text: sits in container stacking context so fluid blends with it ── */}
+        <div className="scrolling-text">
+          <span>SANJANA DISSANAYAKA</span>
+        </div>
+
+        {/* ── New fluid effect: blends with background + scrolling text, NOT the image ── */}
+        <NewFluidBg />
+
+        {/* ── Image wrapper isolated so fluid blend-mode cannot affect FluidReveal ── */}
         <div className="image-wrapper">
-          
-
-          <div className="scrolling-text">
-            <span>SANJANA DISSANAYAKA</span>
-          </div>
-
           <div className="image-stack">
             {isMobile ? (
               /* ── Mobile: plain static image, no WebGL ── */
@@ -77,9 +81,6 @@ const HelmetRevealAnimation: React.FC = () => {
               <FluidReveal imageScale={1} />
             )}
           </div>
-
-
-
         </div>
       </div>
     </div>

@@ -35,8 +35,8 @@ void main() {
       vec2 closestPoint = uPrevMouse + projAlong * mouseDir;
       float dist = length(vUv - closestPoint);
 
-      float lineWidth = 0.045;
-      float intensity = smoothstep(lineWidth, 0.0, dist) * 0.3;
+      float lineWidth = 0.090;
+      float intensity = smoothstep(lineWidth, 0.0, dist) * 0.5;
 
       newValue += intensity;
     }

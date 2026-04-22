@@ -57,6 +57,9 @@ body {
   align-items: flex-end;
   justify-content: center;
   overflow: hidden;
+  /* Prevent the fluid mix-blend-mode canvas from bleeding into the image area */
+  isolation: isolate;
+  z-index: 20;
 }
 
 .image-stack {
@@ -68,6 +71,7 @@ body {
   filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.5));
   overflow: hidden;
   border-radius: 15px;
+  isolation: isolate;
 }
 
 .image-stack img {
@@ -173,7 +177,7 @@ body {
   font-size: 20vw;
   top: 70vh;
   color: white;
-  opacity: 0.7;
+  opacity: 0.9;
   animation: scroll-left 14s linear infinite;
 }
 
