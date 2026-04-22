@@ -178,7 +178,7 @@ body {
   top: 70vh;
   color: white;
   opacity: 0.9;
-  animation: scroll-left 14s linear infinite;
+  animation: scroll-left 20s linear infinite;
 }
 
 @keyframes scroll-left {
