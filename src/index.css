@@ -21,8 +21,9 @@ All colors MUST be HSL.
 }
 
 html {
-  scroll-behavior: smooth;
+  /* scroll-behavior is handled by Lenis — do not set smooth here */
   overflow-y: scroll;          /* keep page scrollable */
+  overflow-x: hidden;          /* prevent horizontal scroll */
 }
 
 body {

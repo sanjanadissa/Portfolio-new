@@ -37,7 +37,7 @@ const projects: Project[] = [
     id: 'card-2',
     tag: 'Machine Learning',
     title: 'CuraNex',
-    description: 'An AI-powered full-stack demand forecasting and inventory optimization platform designed for pharmaceutical supply chains. Features advanced time-series models, multi-horizon forecasting, anomaly detection, and intelligent reorder recommendations, supported by a scalable data pipeline, REST APIs, and an interactive dashboard for real-time analytics and decision-making.',
+    description: 'An AI-powered pharmaceutical supply chain platform for demand forecasting and inventory optimization with real-time analytics, anomaly detection, and smart reorder recommendations.',
     tech: ['React', 'FastAPI', 'XGBoost', 'LightGBM', 'PyTorch'],
     image: img5,
     color: '#1a1d29',
@@ -68,7 +68,7 @@ const projects: Project[] = [
   {
     id: 'card-5',
     tag: 'Desktop Application',
-    title: 'HR-Management System',
+    title: 'HRM System',
     description:
       'A C# WPF desktop HR management system for managing employees, departments, attendance, leave, and payroll, with role-based authentication, automated payroll, and reporting features.',
     tech: ['C#', 'WPF', 'SQL Server'],
