@@ -21,24 +21,30 @@ function App() {
   // Creates a Lenis instance and syncs it with GSAP's ticker so that all
   // existing ScrollTrigger animations update correctly during smooth scrolling.
   useEffect(() => {
+    const isMobile = window.innerWidth <= 768;
+
     const lenis = new Lenis({
-      duration: 1.2,
+      duration: isMobile ? 1 : 1.2,
       smoothWheel: true,
       syncTouch: false,
+      touchMultiplier: 1,
+      lerp: isMobile ? 0.08 : 0.1,
     });
 
     // Sync Lenis scroll events with GSAP ScrollTrigger
     lenis.on('scroll', ScrollTrigger.update);
 
-    // Drive Lenis from GSAP's ticker for frame-perfect synchronisation
-    gsap.ticker.add((time) => {
+    // Single shared RAF callback — prevents duplicate loops
+    const rafCallback = (time: number) => {
       lenis.raf(time * 1000);
-    });
+    };
+    gsap.ticker.add(rafCallback);
 
     // Disable GSAP's built-in lag smoothing so Lenis handles all timing
     gsap.ticker.lagSmoothing(0);
 
     return () => {
+      gsap.ticker.remove(rafCallback);
       lenis.destroy();
     };
   }, []);

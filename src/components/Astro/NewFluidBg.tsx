@@ -45,12 +45,21 @@ const NewFluidBg: React.FC<NewFluidBgProps> = ({ config = {}, style, className }
     const canvas = canvasRef.current;
     if (!canvas) return;
 
+    const isMobile = window.innerWidth <= 768;
     const cfg = { ...DEFAULT_CONFIG, ...config };
+
+    // ── Mobile-specific overrides: lower resolution = less GPU work ──
+    if (isMobile) {
+      cfg.simResolution = 128;
+      cfg.dyeResolution = 512;
+      cfg.pressureIterations = 20;
+    }
 
     // ── Renderer ──────────────────────────────────────────────
     const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, premultipliedAlpha: false });
     renderer.setClearColor(0x000000, 0);
-    const dpr = Math.min(window.devicePixelRatio, 2);
+    // Cap DPR to 1 on mobile — massively reduces fill-rate
+    const dpr = isMobile ? 1 : Math.min(window.devicePixelRatio, 2);
     renderer.setPixelRatio(dpr);
     renderer.setSize(canvas.clientWidth, canvas.clientHeight);
 
@@ -196,11 +205,19 @@ const NewFluidBg: React.FC<NewFluidBgProps> = ({ config = {}, style, className }
     // ── Animation loop ─────────────────────────────────────────
     let animId: number;
     let lastTime = Date.now();
+    // On mobile, throttle to ~30fps to save battery and reduce heat
+    const frameInterval = isMobile ? 33 : 0; // ms between frames
+    let lastFrameTime = 0;
 
     const tick = () => {
       animId = requestAnimationFrame(tick);
-      const dt = Math.min((Date.now() - lastTime) / 1000, 0.016);
-      lastTime = Date.now();
+
+      const now = Date.now();
+      if (isMobile && now - lastFrameTime < frameInterval) return;
+      lastFrameTime = now;
+
+      const dt = Math.min((now - lastTime) / 1000, 0.016);
+      lastTime = now;
 
       if (mouse.moved) {
         splat(mouse.x, mouse.y, mouse.velocityX, mouse.velocityY);

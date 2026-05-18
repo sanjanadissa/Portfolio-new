@@ -22,6 +22,8 @@ export class StarsBackground {
   private center: { x: number; y: number } = { x: 0, y: 0 };
   private animationId?: number;
 
+  private isMobile: boolean;
+
   constructor(canvas: HTMLCanvasElement, options: StarOptions = {}) {
     this.canvas = canvas;
     const context = canvas.getContext('2d');
@@ -29,7 +31,9 @@ export class StarsBackground {
       throw new Error('Canvas context not available');
     }
     this.ctx = context;
-    this.starDensity = options.starDensity || 0.000065;
+    this.isMobile = window.innerWidth <= 768;
+    // Fewer stars on mobile
+    this.starDensity = (options.starDensity || 0.000065) * (this.isMobile ? 0.5 : 1);
 
     this.init();
     this.handleResize = this.handleResize.bind(this);
@@ -43,7 +47,8 @@ export class StarsBackground {
 
   private handleResize(): void {
     const rect = this.canvas.getBoundingClientRect();
-    const dpr = window.devicePixelRatio || 1;
+    // Cap DPR to 1 on mobile
+    const dpr = this.isMobile ? 1 : (window.devicePixelRatio || 1);
 
     this.canvas.width = rect.width * dpr;
     this.canvas.height = rect.height * dpr;
@@ -57,10 +62,10 @@ export class StarsBackground {
     // On mobile the pivot at the very bottom leaves the top of the screen
     // without stars. Use the true center on narrow viewports so stars spread
     // across the full canvas; keep bottom-center for desktop.
-    const isMobile = rect.width <= 768;
+    const isMobileViewport = rect.width <= 768;
     this.center = {
       x: rect.width / 2,
-      y: isMobile ? rect.height / 2 : rect.height,
+      y: isMobileViewport ? rect.height / 2 : rect.height,
     };
 
     this.generateStars(rect.width, rect.height);
@@ -89,22 +94,42 @@ export class StarsBackground {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.time += 1;
 
-    for (const star of this.stars) {
-      star.angle += this.rotationSpeed;
-      const x = this.center.x + star.radius * Math.cos(star.angle);
-      const y = this.center.y + star.radius * Math.sin(star.angle);
+    // On mobile: skip shadowBlur (very expensive on Canvas2D),
+    // and render all stars in a single pass without save/restore
+    if (this.isMobile) {
+      this.ctx.shadowColor = 'transparent';
+      this.ctx.shadowBlur = 0;
+      for (const star of this.stars) {
+        star.angle += this.rotationSpeed;
+        const x = this.center.x + star.radius * Math.cos(star.angle);
+        const y = this.center.y + star.radius * Math.sin(star.angle);
 
-      if (x >= -10 && x <= this.canvas.width + 10 && y >= -10 && y <= this.canvas.height + 10) {
-        const opacity = star.baseOpacity + Math.sin(this.time * 0.015 / star.twinkleSpeed) * 0.94;
+        if (x >= -10 && x <= this.canvas.width + 10 && y >= -10 && y <= this.canvas.height + 10) {
+          const opacity = star.baseOpacity + Math.sin(this.time * 0.015 / star.twinkleSpeed) * 0.94;
+          this.ctx.beginPath();
+          this.ctx.arc(x, y, star.size, 0, Math.PI * 2);
+          this.ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
+          this.ctx.fill();
+        }
+      }
+    } else {
+      for (const star of this.stars) {
+        star.angle += this.rotationSpeed;
+        const x = this.center.x + star.radius * Math.cos(star.angle);
+        const y = this.center.y + star.radius * Math.sin(star.angle);
 
-        this.ctx.save();
-        this.ctx.beginPath();
-        this.ctx.arc(x, y, star.size, 0, Math.PI * 2);
-        this.ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
-        this.ctx.shadowColor = `rgba(255, 255, 255, ${opacity})`;
-        this.ctx.shadowBlur = 8;
-        this.ctx.fill();
-        this.ctx.restore();
+        if (x >= -10 && x <= this.canvas.width + 10 && y >= -10 && y <= this.canvas.height + 10) {
+          const opacity = star.baseOpacity + Math.sin(this.time * 0.015 / star.twinkleSpeed) * 0.94;
+
+          this.ctx.save();
+          this.ctx.beginPath();
+          this.ctx.arc(x, y, star.size, 0, Math.PI * 2);
+          this.ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
+          this.ctx.shadowColor = `rgba(255, 255, 255, ${opacity})`;
+          this.ctx.shadowBlur = 8;
+          this.ctx.fill();
+          this.ctx.restore();
+        }
       }
     }
 

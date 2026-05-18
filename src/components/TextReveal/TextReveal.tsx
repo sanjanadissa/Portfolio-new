@@ -73,35 +73,60 @@ const TextReveal: React.FC<TextRevealProps> = ({
     const container = containerRef.current;
     if (!container) return;
 
-    // Scope the selector to this container so multiple instances don't clash
-    const chars = gsap.utils.toArray<HTMLElement>('.tr-char', container);
-    const total = chars.length;
-    if (total === 0) return;
+    let ctx = gsap.context(() => {
+      // Scope the selector to this container so multiple instances don't clash
+      const chars = gsap.utils.toArray<HTMLElement>('.tr-char', container);
+      const total = chars.length;
+      if (total === 0) return;
 
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: container,
-        start: triggerStart,
-        end: triggerEnd,
-        scrub: true,
-      },
-    });
+      const mm = gsap.matchMedia();
 
-    chars.forEach((char, i) => {
-      const start = i / total;
-      const end = (i + 1) / total;
+      // Desktop: Scrub animation
+      mm.add('(min-width: 769px)', () => {
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: container,
+            start: triggerStart,
+            end: triggerEnd,
+            scrub: true,
+          },
+        });
 
-      tl.fromTo(
-        char,
-        { opacity: 0 },
-        { opacity: 1, ease: 'none', duration: end - start },
-        start,
-      );
-    });
+        chars.forEach((char, i) => {
+          const start = i / total;
+          const end = (i + 1) / total;
+
+          tl.fromTo(
+            char,
+            { opacity: 0 },
+            { opacity: 1, ease: 'none', duration: end - start },
+            start,
+          );
+        });
+      });
+
+      // Mobile: Lightweight once animation (no scrub)
+      mm.add('(max-width: 768px)', () => {
+        gsap.fromTo(
+          chars,
+          { opacity: 0 },
+          {
+            opacity: 1,
+            stagger: 0.02,
+            duration: 0.1,
+            ease: 'power1.out',
+            scrollTrigger: {
+              trigger: container,
+              start: 'top 85%',
+              once: true,
+            },
+          }
+        );
+      });
+    }, container);
 
     return () => {
-      tl.scrollTrigger?.kill();
-      tl.kill();
+      ctx.revert(); // Automatically kills tweens, ScrollTriggers, and matchMedia listeners
     };
   }, [paragraph, triggerStart, triggerEnd]);
 

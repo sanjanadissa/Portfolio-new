@@ -95,6 +95,8 @@ const StickyCards = () => {
     const cardYOffset = 5;
     const cardScaleStep = 0.075;
 
+    const isMobile = window.innerWidth <= 768;
+
     cards.forEach((card, i) => {
       gsap.set(card, {
         xPercent: -50,
@@ -106,15 +108,23 @@ const StickyCards = () => {
 
     if (header) gsap.set(header, { yPercent: 0 });
 
+    // Track last progress to skip redundant updates on mobile
+    let lastProgress = -1;
+
     const trigger = ScrollTrigger.create({
       trigger: section,
       start: 'top top',
       end: `+=${window.innerHeight * totalCards}`,
       pin: true,
       pinSpacing: true,
-      scrub: 0.5,
+      scrub: isMobile ? 1 : 0.5,  // Higher scrub on mobile = smoother, less CPU
       onUpdate: (self) => {
         const progress = self.progress;
+
+        // Skip redundant updates when progress hasn't changed meaningfully
+        if (isMobile && Math.abs(progress - lastProgress) < 0.001) return;
+        lastProgress = progress;
+
         const activeIndex = Math.min(
           Math.floor(progress / segmentSize),
           totalCards - 1,
@@ -167,7 +177,7 @@ const StickyCards = () => {
         trigger: section,
         start: 'top 85%',
         end: 'top top',
-        scrub: 0.7,
+        scrub: isMobile ? 1.2 : 0.7,
       },
     });
 

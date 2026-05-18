@@ -23,15 +23,18 @@ const FluidReveal: React.FC<FluidRevealProps> = ({
     const canvas = canvasRef.current;
     if (!canvas) return;
 
+    const isMobile = window.innerWidth <= 768;
+
     // ── Renderer ──────────────────────────────────────────────
     const renderer = new THREE.WebGLRenderer({
       canvas,
-      antialias: true,
-      precision: 'highp',
+      antialias: !isMobile, // Disable AA on mobile
+      precision: isMobile ? 'mediump' : 'highp',
       alpha: true,
     });
     renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    const dpr = isMobile ? 1 : Math.min(window.devicePixelRatio, 2);
+    renderer.setPixelRatio(dpr);
 
     // ── Scene / Camera ─────────────────────────────────────────
     const scene = new THREE.Scene();
@@ -44,7 +47,8 @@ const FluidReveal: React.FC<FluidRevealProps> = ({
     let lastMoveTime = 0;
 
     // ── Ping-pong render targets ───────────────────────────────
-    const simSize = 512;
+    // Halve the fluid sim buffer size on mobile
+    const simSize = isMobile ? 256 : 512;
     const pingPongTargets = [
       new THREE.WebGLRenderTarget(simSize, simSize, {
         minFilter: THREE.LinearFilter,
@@ -101,7 +105,7 @@ const FluidReveal: React.FC<FluidRevealProps> = ({
         uResolution: {
           value: new THREE.Vector2(canvas.clientWidth, canvas.clientHeight),
         },
-        uDpr: { value: window.devicePixelRatio },
+        uDpr: { value: dpr },
         uTopTextureSize: { value: topTextureSize },
         uBottomTextureSize: { value: bottomTextureSize },
         uImageScale: { value: imageScale },
@@ -220,13 +224,16 @@ const FluidReveal: React.FC<FluidRevealProps> = ({
 
     function onWindowResize() {
       if (!canvas) return;
+      const isMobileResize = window.innerWidth <= 768;
+      const newDpr = isMobileResize ? 1 : Math.min(window.devicePixelRatio, 2);
+      
       renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setPixelRatio(newDpr);
       displayMaterial.uniforms.uResolution.value.set(
         canvas.clientWidth,
         canvas.clientHeight
       );
-      displayMaterial.uniforms.uDpr.value = window.devicePixelRatio;
+      displayMaterial.uniforms.uDpr.value = newDpr;
     }
 
     window.addEventListener('mousemove', onMouseMove);
@@ -236,9 +243,15 @@ const FluidReveal: React.FC<FluidRevealProps> = ({
 
     // ── Animation loop ─────────────────────────────────────────
     let animFrameId: number;
+    let lastRenderTime = 0;
+    const mobileFrameInterval = isMobile ? 33 : 0; // throttle to ~30fps on mobile
 
-    function animate() {
+    function animate(currentTime: number) {
       animFrameId = requestAnimationFrame(animate);
+
+      // On mobile, skip frames to achieve 30fps
+      if (isMobile && currentTime - lastRenderTime < mobileFrameInterval) return;
+      lastRenderTime = currentTime;
 
       if (isMoving && performance.now() - lastMoveTime > 50) isMoving = false;
 
@@ -259,7 +272,7 @@ const FluidReveal: React.FC<FluidRevealProps> = ({
       renderer.render(scene, camera);
     }
 
-    animate();
+    animFrameId = requestAnimationFrame(animate);
 
     // ── Cleanup ────────────────────────────────────────────────
     return () => {
