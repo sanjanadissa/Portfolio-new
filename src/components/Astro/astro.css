@@ -108,6 +108,9 @@ body {
     height: auto;
     max-height: 85dvh;       /* cap so top of image stays visible */
     overflow: visible;
+    /* Fix for iOS Safari WebKit bug causing a solid white plane behind transparent PNGs */
+    filter: none;
+    -webkit-filter: none;
   }
 
   /* override the global .image-stack img rule for mobile */

@@ -40,7 +40,7 @@ const cardData: CardCategory[] = [
         
       { name: 'DotNet',     icon: si('dotnet') },
       { name: 'Node.js',    icon: si('nodedotjs') },
-      { name: 'Express',    icon: si('express') },
+      { name: 'Express', icon: si('express/38bdf8') }, 
       { name: 'SpringBoot',         icon: si('springboot') },
 
     
@@ -52,9 +52,9 @@ const cardData: CardCategory[] = [
     techs: [
       { name: 'Docker',  icon: si('docker') },
       { name: 'Cloud',     icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/googlecloud/googlecloud-original.svg"  },
-      { name: 'GitHub',  icon: si('github') },
+      { name: 'GitHub',  icon: si('github/a78bfa') },  
       { name: 'Git',  icon: si('git') },
-      { name: 'Linux',   icon: si('linux') },
+      { name: 'Linux', icon: si('linux/ffcc00') },
       { name: 'Figma',   icon: si('figma') },
     ],
   },
@@ -452,7 +452,7 @@ const MagicBento = ({
       <BentoCardGrid gridRef={gridRef}>
         {cardData.map((card, index) => {
           const cls = `magic-bento-card ${enableBorderGlow ? 'magic-bento-card--border-glow' : ''}`;
-          const sty: React.CSSProperties = { backgroundColor: '#060010' };
+          const sty: React.CSSProperties = { backgroundColor: 'rgba(6, 0, 16, 0)',border: 'none' };
 
           const inner = (
             <>

@@ -10,76 +10,69 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import './SpectralGhost.css';
 import Footer from "../Footer/Footer";
 
-
 gsap.registerPlugin(ScrollTrigger);
 
 // ── Fluorescent color palette ─────────────────────────────────────────────────
 const fluorescentColors: Record<string, number> = {
-  cyan: 0x00ffff,
-  lime: 0x00ff00,
+  cyan:    0x00ffff,
+  lime:    0x00ff00,
   magenta: 0xff00ff,
-  yellow: 0xffff00,
-  orange: 0xff4500,
-  pink: 0xff1493,
-  purple: 0x9400d3,
-  blue: 0x0080ff,
-  green: 0x00ff80,
-  red: 0xff0040,
-  teal: 0x00ffaa,
-  violet: 0x8a2be2,
+  yellow:  0xffff00,
+  orange:  0xff4500,
+  pink:    0xff1493,
+  purple:  0x9400d3,
+  blue:    0x0080ff,
+  green:   0x00ff80,
+  red:     0xff0040,
+  teal:    0x00ffaa,
+  violet:  0x8a2be2,
 };
 
 // ── Production parameters ─────────────────────────────────────────────────────
 const params = {
-  bodyColor: 0x0f2027,
-  glowColor: 'orange',
-  eyeGlowColor: 'green',
-  ghostOpacity: 0.58,
-  emissiveIntensity: 2.5,
-  pulseSpeed: 1.6,
-  pulseIntensity: 0.6,
-  eyeGlowDecay: 0.95,
-  eyeGlowResponse: 0.31,
-  rimLightIntensity: 1.8,
-  followSpeed: 0.075,
-  wobbleAmount: 0.35,
-  floatSpeed: 1.6,
-  movementThreshold: 0.07,
-  particleCount: 250,
-  particleDecayRate: 0.005,
-  particleColor: 'orange',
-  createParticlesOnlyWhenMoving: true,
-  particleCreationRate: 5,
-  revealRadius: 44,
-  fadeStrength: 3,
-  baseOpacity: 0.95,
-  revealOpacity: 0.5,
+  bodyColor:           0x0f2027,
+  glowColor:           'orange',
+  eyeGlowColor:        'green',
+  ghostOpacity:        0.58,
+  emissiveIntensity:   2.5,
+  pulseSpeed:          1.6,
+  pulseIntensity:      0.6,
+  eyeGlowDecay:        0.95,
+  eyeGlowResponse:     0.31,
+  rimLightIntensity:   1.8,
+  followSpeed:         0.075,
+  wobbleAmount:        0.35,
+  floatSpeed:          1.6,
+  movementThreshold:   0.07,
+  revealRadius:        44,
+  fadeStrength:        3,
+  baseOpacity:         0.95,
+  revealOpacity:       0.5,
   fireflyGlowIntensity: 5.0,
-  fireflySpeed: 0.3,
-  analogIntensity: 0,
-  analogGrain: 0.4,
-  analogBleeding: 1.0,
-  analogVSync: 1.0,
-  analogScanlines: 1.0,
-  analogVignette: 1.0,
-  analogJitter: 0.4,
-  limboMode: false,
+  fireflySpeed:        0.3,
+  analogIntensity:     0,
+  analogGrain:         0.4,
+  analogBleeding:      1.0,
+  analogVSync:         1.0,
+  analogScanlines:     1.0,
+  analogVignette:      1.0,
+  analogJitter:        0.4,
 };
 
 // ── Analog Decay Shader ───────────────────────────────────────────────────────
 const analogDecayShader = {
   uniforms: {
-    tDiffuse: { value: null },
-    uTime: { value: 0.0 },
-    uResolution: { value: new THREE.Vector2(1, 1) },
-    uAnalogGrain: { value: params.analogGrain },
-    uAnalogBleeding: { value: params.analogBleeding },
-    uAnalogVSync: { value: params.analogVSync },
+    tDiffuse:         { value: null },
+    uTime:            { value: 0.0 },
+    uResolution:      { value: new THREE.Vector2(1, 1) },
+    uAnalogGrain:     { value: params.analogGrain },
+    uAnalogBleeding:  { value: params.analogBleeding },
+    uAnalogVSync:     { value: params.analogVSync },
     uAnalogScanlines: { value: params.analogScanlines },
-    uAnalogVignette: { value: params.analogVignette },
-    uAnalogJitter: { value: params.analogJitter },
+    uAnalogVignette:  { value: params.analogVignette },
+    uAnalogJitter:    { value: params.analogJitter },
     uAnalogIntensity: { value: params.analogIntensity },
-    uLimboMode: { value: 0.0 },
+    uLimboMode:       { value: 0.0 },
   },
   vertexShader: /* glsl */ `
     varying vec2 vUv;
@@ -140,7 +133,7 @@ const analogDecayShader = {
       if (uAnalogBleeding > 0.01) {
         float bleedAmount = 0.012 * uAnalogBleeding * uAnalogIntensity;
         float offsetPhase = time * 1.5 + uv.y * 20.0;
-        vec2 redOffset = vec2(sin(offsetPhase) * bleedAmount, 0.0);
+        vec2 redOffset  = vec2(sin(offsetPhase) * bleedAmount, 0.0);
         vec2 blueOffset = vec2(-sin(offsetPhase * 1.1) * bleedAmount * 0.8, 0.0);
         float r = texture2D(tDiffuse, jitteredUV + redOffset).r;
         float g = texture2D(tDiffuse, jitteredUV).g;
@@ -179,41 +172,48 @@ const analogDecayShader = {
   `,
 };
 
+// ── Firefly userData type ─────────────────────────────────────────────────────
+interface FireflyData {
+  velocity:         THREE.Vector3;
+  phase:            number;
+  pulseSpeed:       number;
+  glowMaterial:     THREE.MeshBasicMaterial;
+  fireflyMaterial:  THREE.MeshBasicMaterial;
+  light:            THREE.PointLight;
+}
+
 // ══════════════════════════════════════════════════════════════════════════════
 // Component
 // ══════════════════════════════════════════════════════════════════════════════
 const SpectralGhost = () => {
-  const sectionRef = useRef<HTMLDivElement>(null);
+  const sectionRef         = useRef<HTMLDivElement>(null);
   const canvasContainerRef = useRef<HTMLDivElement>(null);
-  // Cream overlay sits ABOVE the Three.js canvas so GSAP can fade it away
-  const colorOverlayRef = useRef<HTMLDivElement>(null);
+  const colorOverlayRef    = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const section = sectionRef.current;
+    const section   = sectionRef.current;
     const container = canvasContainerRef.current;
     if (!section || !container) return;
 
-    // ── Mobile detection ────────────────────────────────────────────────────
     const isMobile = window.innerWidth <= 768;
+    const width    = section.offsetWidth;
+    const height   = section.offsetHeight;
 
-    const width = section.offsetWidth;
-    const height = section.offsetHeight;
-
-    // ── Scene ───────────────────────────────────────────────────────────────
+    // ── Scene ────────────────────────────────────────────────────────────────
     const scene = new THREE.Scene();
     scene.background = null;
 
     const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
     camera.position.z = 20;
 
-    // ── Renderer ────────────────────────────────────────────────────────────
+    // ── Renderer ─────────────────────────────────────────────────────────────
     const renderer = new THREE.WebGLRenderer({
-      antialias: true,
-      powerPreference: 'high-performance',
-      alpha: true,
-      premultipliedAlpha: false,
-      stencil: false,
-      depth: true,
+      antialias:           true,
+      powerPreference:     'high-performance',
+      alpha:               true,
+      premultipliedAlpha:  false,
+      stencil:             false,
+      depth:               true,
       preserveDrawingBuffer: false,
     });
     renderer.setSize(width, height);
@@ -223,7 +223,7 @@ const SpectralGhost = () => {
     renderer.setClearColor(0x000000, 0);
     container.appendChild(renderer.domElement);
 
-    // ── Post-processing ─────────────────────────────────────────────────────
+    // ── Post-processing ──────────────────────────────────────────────────────
     const composer = new EffectComposer(renderer);
     composer.addPass(new RenderPass(scene, camera));
 
@@ -240,15 +240,15 @@ const SpectralGhost = () => {
     composer.addPass(analogDecayPass);
     composer.addPass(new OutputPass());
 
-    // ── Atmosphere plane ────────────────────────────────────────────────────
+    // ── Atmosphere plane ─────────────────────────────────────────────────────
     const atmosphereMaterial = new THREE.ShaderMaterial({
       uniforms: {
         ghostPosition: { value: new THREE.Vector3(0, 0, 0) },
-        revealRadius: { value: params.revealRadius },
-        fadeStrength: { value: params.fadeStrength },
-        baseOpacity: { value: params.baseOpacity },
+        revealRadius:  { value: params.revealRadius },
+        fadeStrength:  { value: params.fadeStrength },
+        baseOpacity:   { value: params.baseOpacity },
         revealOpacity: { value: params.revealOpacity },
-        time: { value: 0 },
+        time:          { value: 0 },
       },
       vertexShader: /* glsl */ `
         varying vec2 vUv;
@@ -291,12 +291,12 @@ const SpectralGhost = () => {
 
     scene.add(new THREE.AmbientLight(0x0a0a2e, 0.08));
 
-    // ── Ghost body ──────────────────────────────────────────────────────────
+    // ── Ghost body ───────────────────────────────────────────────────────────
     const ghostGroup = new THREE.Group();
     scene.add(ghostGroup);
 
     const ghostGeometry = new THREE.SphereGeometry(2, 40, 40);
-    const posAttr = ghostGeometry.getAttribute('position');
+    const posAttr   = ghostGeometry.getAttribute('position');
     const positions = posAttr.array as Float32Array;
     for (let i = 0; i < positions.length; i += 3) {
       if (positions[i + 1] < -0.2) {
@@ -312,15 +312,15 @@ const SpectralGhost = () => {
     ghostGeometry.computeVertexNormals();
 
     const ghostMaterial = new THREE.MeshStandardMaterial({
-      color: params.bodyColor,
-      transparent: true,
-      opacity: params.ghostOpacity,
-      emissive: new THREE.Color(fluorescentColors[params.glowColor]),
+      color:             params.bodyColor,
+      transparent:       true,
+      opacity:           params.ghostOpacity,
+      emissive:          new THREE.Color(fluorescentColors[params.glowColor]),
       emissiveIntensity: params.emissiveIntensity,
-      roughness: 0.02,
-      metalness: 0.0,
-      side: THREE.DoubleSide,
-      alphaTest: 0.1,
+      roughness:         0.02,
+      metalness:         0.0,
+      side:              THREE.DoubleSide,
+      alphaTest:         0.1,
     });
     const ghostBody = new THREE.Mesh(ghostGeometry, ghostMaterial);
     ghostGroup.add(ghostBody);
@@ -334,7 +334,7 @@ const SpectralGhost = () => {
     scene.add(rim2);
 
     // ── Eyes ─────────────────────────────────────────────────────────────────
-    const eyeColor = fluorescentColors[params.eyeGlowColor];
+    const eyeColor  = fluorescentColors[params.eyeGlowColor];
     const socketGeo = new THREE.SphereGeometry(0.45, 16, 16);
     const socketMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
 
@@ -348,46 +348,37 @@ const SpectralGhost = () => {
     rightSocket.scale.set(1.1, 1.0, 0.6);
     ghostGroup.add(rightSocket);
 
-    const eyeGeo = new THREE.SphereGeometry(0.3, 12, 12);
-    const leftEyeMat = new THREE.MeshBasicMaterial({ color: eyeColor, transparent: true, opacity: 0 });
-    const leftEye = new THREE.Mesh(eyeGeo, leftEyeMat);
+    const eyeGeo      = new THREE.SphereGeometry(0.3, 12, 12);
+    const leftEyeMat  = new THREE.MeshBasicMaterial({ color: eyeColor, transparent: true, opacity: 0 });
+    const leftEye     = new THREE.Mesh(eyeGeo, leftEyeMat);
     leftEye.position.set(-0.7, 0.6, 2.0);
     ghostGroup.add(leftEye);
 
     const rightEyeMat = new THREE.MeshBasicMaterial({ color: eyeColor, transparent: true, opacity: 0 });
-    const rightEye = new THREE.Mesh(eyeGeo, rightEyeMat);
+    const rightEye    = new THREE.Mesh(eyeGeo, rightEyeMat);
     rightEye.position.set(0.7, 0.6, 2.0);
     ghostGroup.add(rightEye);
 
-    const outerGeo = new THREE.SphereGeometry(0.525, 12, 12);
-    const leftOuterMat = new THREE.MeshBasicMaterial({ color: eyeColor, transparent: true, opacity: 0, side: THREE.BackSide });
-    const leftOuter = new THREE.Mesh(outerGeo, leftOuterMat);
+    const outerGeo      = new THREE.SphereGeometry(0.525, 12, 12);
+    const leftOuterMat  = new THREE.MeshBasicMaterial({ color: eyeColor, transparent: true, opacity: 0, side: THREE.BackSide });
+    const leftOuter     = new THREE.Mesh(outerGeo, leftOuterMat);
     leftOuter.position.set(-0.7, 0.6, 1.95);
     ghostGroup.add(leftOuter);
 
     const rightOuterMat = new THREE.MeshBasicMaterial({ color: eyeColor, transparent: true, opacity: 0, side: THREE.BackSide });
-    const rightOuter = new THREE.Mesh(outerGeo, rightOuterMat);
+    const rightOuter    = new THREE.Mesh(outerGeo, rightOuterMat);
     rightOuter.position.set(0.7, 0.6, 1.95);
     ghostGroup.add(rightOuter);
 
-    // ── Fireflies (desktop only) ────────────────────────────────────────────
+    // ── Fireflies (desktop only) ─────────────────────────────────────────────
     const fireflyGroup = new THREE.Group();
     if (!isMobile) scene.add(fireflyGroup);
-
-    interface FireflyData {
-      velocity: THREE.Vector3;
-      phase: number;
-      pulseSpeed: number;
-      glowMaterial: THREE.MeshBasicMaterial;
-      fireflyMaterial: THREE.MeshBasicMaterial;
-      light: THREE.PointLight;
-    }
 
     const fireflies: THREE.Mesh[] = [];
     if (!isMobile) {
       for (let i = 0; i < 20; i++) {
-        const fMat = new THREE.MeshBasicMaterial({ color: 0xffff44, transparent: true, opacity: 0.9 });
-        const firefly = new THREE.Mesh(new THREE.SphereGeometry(0.02, 2, 2), fMat);
+        const fMat     = new THREE.MeshBasicMaterial({ color: 0xffff44, transparent: true, opacity: 0.9 });
+        const firefly  = new THREE.Mesh(new THREE.SphereGeometry(0.02, 2, 2), fMat);
         firefly.position.set(
           (Math.random() - 0.5) * 40,
           (Math.random() - 0.5) * 30,
@@ -406,11 +397,11 @@ const SpectralGhost = () => {
             (Math.random() - 0.5) * params.fireflySpeed,
             (Math.random() - 0.5) * params.fireflySpeed,
           ),
-          phase: Math.random() * Math.PI * 2,
-          pulseSpeed: 2 + Math.random() * 3,
-          glowMaterial: glowMat,
+          phase:           Math.random() * Math.PI * 2,
+          pulseSpeed:      2 + Math.random() * 3,
+          glowMaterial:    glowMat,
           fireflyMaterial: fMat,
-          light: fLight,
+          light:           fLight,
         };
 
         fireflyGroup.add(firefly);
@@ -418,110 +409,28 @@ const SpectralGhost = () => {
       }
     }
 
-    // ── Particle system (desktop only) ──────────────────────────────────────
-    const particleGeometries = [
-      new THREE.SphereGeometry(0.05, 6, 6),
-      new THREE.TetrahedronGeometry(0.04, 0),
-      new THREE.OctahedronGeometry(0.045, 0),
-    ];
-    const particleBaseMaterial = new THREE.MeshBasicMaterial({
-      color: fluorescentColors[params.particleColor],
-      transparent: true,
-      opacity: 0,
-      alphaTest: 0.1,
-    });
-
-    const particleGroupObj = new THREE.Group();
-    if (!isMobile) scene.add(particleGroupObj);
-
-    const particlePool: THREE.Mesh[] = [];
-    const activeParticles: THREE.Mesh[] = [];
-
-    if (!isMobile) {
-      // Pre-fill pool
-      for (let i = 0; i < 100; i++) {
-        const gIdx = Math.floor(Math.random() * particleGeometries.length);
-        const p = new THREE.Mesh(particleGeometries[gIdx], particleBaseMaterial.clone());
-        p.visible = false;
-        particleGroupObj.add(p);
-        particlePool.push(p);
-      }
-    }
-
-    function spawnParticle() {
-      if (isMobile) return;
-      let p: THREE.Mesh | undefined;
-      if (particlePool.length > 0) {
-        p = particlePool.pop()!;
-        p.visible = true;
-      } else if (activeParticles.length < params.particleCount) {
-        const gIdx = Math.floor(Math.random() * particleGeometries.length);
-        p = new THREE.Mesh(particleGeometries[gIdx], particleBaseMaterial.clone());
-        particleGroupObj.add(p);
-      } else {
-        return;
-      }
-
-      const col = new THREE.Color(fluorescentColors[params.particleColor]);
-      col.offsetHSL(Math.random() * 0.1 - 0.05, 0, 0);
-      (p.material as THREE.MeshBasicMaterial).color = col;
-
-      p.position.copy(ghostGroup.position);
-      p.position.z -= 0.8 + Math.random() * 0.6;
-      p.position.x += (Math.random() - 0.5) * 3.5;
-      p.position.y += (Math.random() - 0.5) * 3.5 - 0.8;
-
-      const s = 0.6 + Math.random() * 0.7;
-      p.scale.set(s, s, s);
-      p.rotation.set(Math.random() * Math.PI * 2, Math.random() * Math.PI * 2, Math.random() * Math.PI * 2);
-
-      p.userData.life = 1.0;
-      p.userData.decay = Math.random() * 0.003 + params.particleDecayRate;
-      p.userData.rotationSpeed = {
-        x: (Math.random() - 0.5) * 0.015,
-        y: (Math.random() - 0.5) * 0.015,
-        z: (Math.random() - 0.5) * 0.015,
-      };
-      p.userData.velocity = {
-        x: (Math.random() - 0.5) * 0.012,
-        y: (Math.random() - 0.5) * 0.012 - 0.002,
-        z: (Math.random() - 0.5) * 0.012 - 0.006,
-      };
-      (p.material as THREE.MeshBasicMaterial).opacity = Math.random() * 0.9;
-      activeParticles.push(p);
-    }
-
-    // Initial particles (desktop only)
-    if (!isMobile) {
-      for (let i = 0; i < 10; i++) spawnParticle();
-    }
-
-    // ── Mouse tracking (scoped to section) ──────────────────────────────────
-    const mouse = new THREE.Vector2(0, 0);
+    // ── Mouse tracking (scoped to section) ───────────────────────────────────
+    const mouse     = new THREE.Vector2(0, 0);
     const prevMouse = new THREE.Vector2(0, 0);
-    const mouseSpeed = new THREE.Vector2(0, 0);
-    let lastMouseUpdate = 0;
-    let isMouseMoving = false;
+    let lastMouseUpdate    = 0;
+    let currentMovement    = 0;
     let mouseMovementTimer: ReturnType<typeof setTimeout> | null = null;
 
     const onMouseMove = (e: MouseEvent) => {
       const rect = section.getBoundingClientRect();
-      const now = performance.now();
+      const now  = performance.now();
       if (now - lastMouseUpdate > 16) {
         prevMouse.copy(mouse);
-        mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-        mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
-        mouseSpeed.x = mouse.x - prevMouse.x;
-        mouseSpeed.y = mouse.y - prevMouse.y;
-        isMouseMoving = true;
+        mouse.x = ((e.clientX - rect.left) / rect.width)  * 2 - 1;
+        mouse.y = -((e.clientY - rect.top)  / rect.height) * 2 + 1;
         if (mouseMovementTimer) clearTimeout(mouseMovementTimer);
-        mouseMovementTimer = setTimeout(() => { isMouseMoving = false; }, 80);
+        mouseMovementTimer = setTimeout(() => {}, 80);
         lastMouseUpdate = now;
       }
     };
     section.addEventListener('mousemove', onMouseMove);
 
-    // ── Resize handler ──────────────────────────────────────────────────────
+    // ── Resize handler ────────────────────────────────────────────────────────
     let resizeTimeout: ReturnType<typeof setTimeout>;
     const onResize = () => {
       if (resizeTimeout) clearTimeout(resizeTimeout);
@@ -538,7 +447,7 @@ const SpectralGhost = () => {
     };
     window.addEventListener('resize', onResize);
 
-    // ── Visibility – pause when out of view ─────────────────────────────────
+    // ── Visibility – pause when out of view ──────────────────────────────────
     let isVisible = false;
     const observer = new IntersectionObserver(
       ([entry]) => { isVisible = entry.isIntersecting; },
@@ -546,32 +455,26 @@ const SpectralGhost = () => {
     );
     observer.observe(section);
 
-    // ── Animation loop ──────────────────────────────────────────────────────
-    let time = 0;
-    let currentMovement = 0;
+    // ── Animation loop ────────────────────────────────────────────────────────
+    let time          = 0;
     let lastFrameTime = 0;
-    let lastParticleTime = 0;
-    let frameCount = 0;
     let rafId: number;
 
     function animate(timestamp: number) {
       rafId = requestAnimationFrame(animate);
 
-      // Skip if section not visible
       if (!isVisible) { lastFrameTime = timestamp; return; }
 
       const deltaTime = timestamp - lastFrameTime;
-      lastFrameTime = timestamp;
+      lastFrameTime   = timestamp;
       if (deltaTime > 100) return;
 
-      const timeIncrement = (deltaTime / 16.67) * 0.01;
-      time += timeIncrement;
-      frameCount++;
+      time += (deltaTime / 16.67) * 0.01;
 
       atmosphereMaterial.uniforms.time.value = time;
-      analogDecayPass.uniforms.uTime.value = time;
+      analogDecayPass.uniforms.uTime.value   = time;
 
-      // Ghost follow mouse
+      // Ghost follows mouse
       const targetX = mouse.x * 11;
       const targetY = mouse.y * 7;
       const prevPos = ghostGroup.position.clone();
@@ -589,19 +492,19 @@ const SpectralGhost = () => {
         Math.cos(time * params.floatSpeed * 0.7) * 0.018 +
         Math.sin(time * params.floatSpeed * 2.3) * 0.008;
 
-      // Pulse
-      const pulse1 = Math.sin(time * params.pulseSpeed) * params.pulseIntensity;
+      // Pulse & breathe
+      const pulse1  = Math.sin(time * params.pulseSpeed) * params.pulseIntensity;
       const breathe = Math.sin(time * 0.6) * 0.12;
       ghostMaterial.emissiveIntensity = params.emissiveIntensity + pulse1 + breathe;
 
-      // Fireflies (desktop only)
+      // ── Fireflies ──────────────────────────────────────────────────────────
       if (!isMobile) {
         fireflies.forEach((ff) => {
           const ud = ff.userData as FireflyData;
           const pulse = Math.sin(time + ud.phase * ud.pulseSpeed) * 0.4 + 0.6;
-          ud.glowMaterial.opacity = params.fireflyGlowIntensity * 0.4 * pulse;
+          ud.glowMaterial.opacity    = params.fireflyGlowIntensity * 0.4 * pulse;
           ud.fireflyMaterial.opacity = params.fireflyGlowIntensity * 0.9 * pulse;
-          ud.light.intensity = params.fireflyGlowIntensity * 0.8 * pulse;
+          ud.light.intensity         = params.fireflyGlowIntensity * 0.8 * pulse;
           ud.velocity.x += (Math.random() - 0.5) * 0.001;
           ud.velocity.y += (Math.random() - 0.5) * 0.001;
           ud.velocity.z += (Math.random() - 0.5) * 0.001;
@@ -613,82 +516,39 @@ const SpectralGhost = () => {
         });
       }
 
-      // Ghost tilt
+      // Tilt toward mouse
       const mouseDir = new THREE.Vector2(
         targetX - ghostGroup.position.x,
         targetY - ghostGroup.position.y,
       ).normalize();
-      const tiltStr = 0.1 * params.wobbleAmount;
+      const tiltStr   = 0.1 * params.wobbleAmount;
       const tiltDecay = 0.95;
       ghostBody.rotation.z = ghostBody.rotation.z * tiltDecay + -mouseDir.x * tiltStr * (1 - tiltDecay);
-      ghostBody.rotation.x = ghostBody.rotation.x * tiltDecay + mouseDir.y * tiltStr * (1 - tiltDecay);
+      ghostBody.rotation.x = ghostBody.rotation.x * tiltDecay +  mouseDir.y * tiltStr * (1 - tiltDecay);
       ghostBody.rotation.y = Math.sin(time * 1.4) * 0.05 * params.wobbleAmount;
 
       // Scale breathing
-      const scaleVar = 1 + Math.sin(time * 2.1) * 0.025 * params.wobbleAmount + pulse1 * 0.015;
+      const scaleVar    = 1 + Math.sin(time * 2.1) * 0.025 * params.wobbleAmount + pulse1 * 0.015;
       const scaleBreath = 1 + Math.sin(time * 0.8) * 0.012;
       const fs = scaleVar * scaleBreath;
       ghostBody.scale.set(fs, fs, fs);
 
-      // Eye glow
-      const isMoving = currentMovement > params.movementThreshold;
+      // Eye glow on movement
+      const isMoving   = currentMovement > params.movementThreshold;
       const targetGlow = isMoving ? 1.0 : 0.0;
-      const glowSpeed = isMoving ? params.eyeGlowResponse * 2 : params.eyeGlowResponse;
+      const glowSpeed  = isMoving ? params.eyeGlowResponse * 2 : params.eyeGlowResponse;
       const newOpacity = leftEyeMat.opacity + (targetGlow - leftEyeMat.opacity) * glowSpeed;
-      leftEyeMat.opacity = newOpacity;
-      rightEyeMat.opacity = newOpacity;
-      leftOuterMat.opacity = newOpacity * 0.3;
+      leftEyeMat.opacity    = newOpacity;
+      rightEyeMat.opacity   = newOpacity;
+      leftOuterMat.opacity  = newOpacity * 0.3;
       rightOuterMat.opacity = newOpacity * 0.3;
-
-      // Particles (desktop only)
-      if (!isMobile) {
-        const normSpeed = Math.sqrt(mouseSpeed.x ** 2 + mouseSpeed.y ** 2) * 8;
-        const shouldSpawn = params.createParticlesOnlyWhenMoving
-          ? currentMovement > 0.005 && isMouseMoving
-          : currentMovement > 0.005;
-
-        if (shouldSpawn && timestamp - lastParticleTime > 100) {
-          const rate = Math.min(params.particleCreationRate, Math.max(1, Math.floor(normSpeed * 3)));
-          for (let i = 0; i < rate; i++) spawnParticle();
-          lastParticleTime = timestamp;
-        }
-
-        const pCount = Math.min(activeParticles.length, 60);
-        for (let i = 0; i < pCount; i++) {
-          const idx = (frameCount + i) % activeParticles.length;
-          if (idx >= activeParticles.length) continue;
-          const p = activeParticles[idx];
-          if (!p || !p.userData) continue;
-          p.userData.life -= p.userData.decay;
-          (p.material as THREE.MeshBasicMaterial).opacity = p.userData.life * 0.85;
-
-          if (p.userData.velocity) {
-            p.position.x += p.userData.velocity.x;
-            p.position.y += p.userData.velocity.y;
-            p.position.z += p.userData.velocity.z;
-            p.position.x += Math.cos(time * 1.8 + p.position.y) * 0.0008;
-          }
-          if (p.userData.rotationSpeed) {
-            p.rotation.x += p.userData.rotationSpeed.x;
-            p.rotation.y += p.userData.rotationSpeed.y;
-            p.rotation.z += p.userData.rotationSpeed.z;
-          }
-          if (p.userData.life <= 0) {
-            p.visible = false;
-            (p.material as THREE.MeshBasicMaterial).opacity = 0;
-            particlePool.push(p);
-            activeParticles.splice(idx, 1);
-            i--;
-          }
-        }
-      }
 
       composer.render();
     }
 
     rafId = requestAnimationFrame(animate);
 
-    // ── Cleanup ─────────────────────────────────────────────────────────────
+    // ── Cleanup ───────────────────────────────────────────────────────────────
     return () => {
       cancelAnimationFrame(rafId);
       observer.disconnect();
@@ -696,27 +556,21 @@ const SpectralGhost = () => {
       window.removeEventListener('resize', onResize);
       if (mouseMovementTimer) clearTimeout(mouseMovementTimer);
 
-      // Dispose Three.js resources
       scene.traverse((obj) => {
         if (obj instanceof THREE.Mesh) {
           obj.geometry?.dispose();
-          if (Array.isArray(obj.material)) {
-            obj.material.forEach((m) => m.dispose());
-          } else {
-            obj.material?.dispose();
-          }
+          if (Array.isArray(obj.material)) obj.material.forEach((m) => m.dispose());
+          else obj.material?.dispose();
         }
       });
 
       renderer.dispose();
       composer.dispose();
-      if (container.contains(renderer.domElement)) {
-        container.removeChild(renderer.domElement);
-      }
+      if (container.contains(renderer.domElement)) container.removeChild(renderer.domElement);
     };
   }, []);
 
-  // ── Colour transition: TestimonialCards cream → SpectralGhost dark ───────────
+  // ── Colour transition: cream → dark ──────────────────────────────────────────
   useEffect(() => {
     const section = sectionRef.current;
     const overlay = colorOverlayRef.current;
@@ -726,10 +580,10 @@ const SpectralGhost = () => {
     const blackColor = 'rgb(0, 0, 0)';
 
     const testimonialEl = document.querySelector('#events') as HTMLElement | null;
-    const prevBodyBg = document.body.style.backgroundColor;
+    const prevBodyBg    = document.body.style.backgroundColor;
 
-    gsap.set(document.body,  { backgroundColor: creamColor });
-    gsap.set(overlay,        { backgroundColor: creamColor, opacity: 1 });
+    gsap.set(document.body, { backgroundColor: creamColor });
+    gsap.set(overlay,       { backgroundColor: creamColor, opacity: 1 });
     if (testimonialEl) gsap.set(testimonialEl, { backgroundColor: creamColor });
 
     const bgTimeline = gsap.timeline({
@@ -743,15 +597,14 @@ const SpectralGhost = () => {
 
     bgTimeline
       .to(document.body, { backgroundColor: blackColor, ease: 'none' }, 0)
-      .to(overlay, { backgroundColor: blackColor, ease: 'none' }, 0)
-      .to(overlay, { opacity: 0, ease: 'power1.in' }, 0.7);
+      .to(overlay,       { backgroundColor: blackColor, ease: 'none' }, 0)
+      .to(overlay,       { opacity: 0, ease: 'power1.in' }, 0.7);
 
     if (testimonialEl) {
       bgTimeline.to(testimonialEl, { backgroundColor: blackColor, ease: 'none' }, 0);
     }
 
-    bgTimeline
-      .to('.nav-glass-surface', { backgroundColor: 'rgba(255,255,255,0.08)', ease: 'none' }, 0);
+    bgTimeline.to('.nav-glass-surface', { backgroundColor: 'rgba(255,255,255,0.08)', ease: 'none' }, 0);
 
     return () => {
       bgTimeline.scrollTrigger?.kill();
@@ -773,11 +626,11 @@ const SpectralGhost = () => {
     if (!sectionEl) return;
 
     const pin = ScrollTrigger.create({
-      trigger: sectionEl,
-      start: 'top top',
-      pin: true,
+      trigger:    sectionEl,
+      start:      'top top',
+      pin:        true,
       pinSpacing: false,
-      id: 'spectral-pin',
+      id:         'spectral-pin',
     });
 
     return () => { pin.kill(); };

@@ -72,6 +72,10 @@
   .magic-bento-card {
     width: 100%;
     min-height: 175px;
+    /* Drop blur on mobile for max frame rate! */
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background-color: rgba(6, 0, 16, 0.0) !important; /* more solid on mobile fallback */
   }
 }
 
@@ -117,8 +121,10 @@
   max-width: 100%;
   padding: 1.35em;
   border-radius: 22px;
-  border: 1px solid var(--border-color);
+  border: 1px solid rgba(255, 255, 255, 0.05); /* Softer semi-transparent border */
   background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   overflow: hidden;
   will-change: transform;
   transform: translateZ(0);
