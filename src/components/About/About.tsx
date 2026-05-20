@@ -81,7 +81,7 @@ export default function About() {
               Who am I?
             </p>
 
-            <div className="about-bio">
+            <div className="about-bio about-bio--desktop">
               <p className="about-bio-para">
                 Hi, I'm Sanjana Dissanayaka — a Computer Science undergraduate at the
                 University of Kelaniya, currently specialising in Artificial Intelligence.
@@ -96,6 +96,12 @@ export default function About() {
                 applications. Whether I'm experimenting with an AI model, developing a
                 web application, or designing a REST API, I enjoy turning ideas into real
                 projects and continuously learning new technologies along the way.
+              </p>
+            </div>
+
+            <div className="about-bio about-bio--mobile">
+              <p className="about-bio-para">
+                Hi, I’m Sanjana Dissanayaka — a Computer Science undergraduate specializing in Artificial Intelligence who enjoys building intelligent and practical software solutions. From developing AI-powered applications to creating modern full-stack web experiences with React, .NET, and Spring Boot, I love turning ideas into real projects while continuously exploring new technologies and improving my skills.
               </p>
             </div>
           </div>

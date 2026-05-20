@@ -331,3 +331,21 @@
     grid-row: 2;
   }
 }
+
+/* ── Responsive bio block toggles ── */
+.about-bio--desktop {
+  display: flex;
+}
+.about-bio--mobile {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .about-bio--desktop {
+    display: none !important;
+  }
+  .about-bio--mobile {
+    display: flex !important;
+  }
+}
+
