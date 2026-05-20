@@ -26,6 +26,14 @@ const HelmetRevealAnimation: React.FC = () => {
   const starsCanvasRef = useRef<HTMLCanvasElement>(null);
   const isMobile = useIsMobile();
 
+  const isAppleDevice = (() => {
+    if (typeof window === 'undefined') return false;
+    const ua = window.navigator.userAgent;
+    return /iPad|iPhone|iPod/.test(ua) || 
+      (ua.includes('Mac') && 'ontouchend' in document) ||
+      /Macintosh/.test(ua);
+  })();
+
   useEffect(() => {
     let starsInstance: StarsBackground | null = null;
 
@@ -64,7 +72,7 @@ const HelmetRevealAnimation: React.FC = () => {
         </div>
 
         {/* ── New fluid effect: blends with background + scrolling text, NOT the image ── */}
-        <NewFluidBg />
+        {!isAppleDevice && <NewFluidBg />}
 
         {/* ── Image wrapper isolated so fluid blend-mode cannot affect FluidReveal ── */}
         <div className="image-wrapper">

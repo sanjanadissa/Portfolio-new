@@ -507,3 +507,39 @@
     box-shadow: 0 10px 20px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.1);
   }
 }
+
+/* ── Apple Device Specific Overrides for StickyCards ── */
+.is-apple .sc-image-wrapper {
+  /* Remove mask-image as it causes severe scroll lag in WebKit when elements are scaled/transformed */
+  -webkit-mask-image: none !important;
+  mask-image: none !important;
+}
+
+@media (max-width: 900px) {
+  .is-apple .sc-card {
+    height: 76% !important; /* Make card taller so content fits without cropping */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05) !important;
+  }
+}
+
+@media (max-width: 680px) {
+  .is-apple .sc-card {
+    height: 72% !important; /* Make card taller on small devices */
+    top: 42% !important; /* Adjust centering to compensate for height */
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.05) !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .is-apple .sc-card {
+    height: 68% !important; /* Make card taller on very small devices */
+    top: 40% !important; /* Adjust centering */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05) !important;
+  }
+  .is-apple .sc-image-section {
+    height: 200px !important; /* Give slightly more space to image wrapper */
+  }
+  .is-apple .sc-image-wrapper {
+    min-height: 200px !important;
+  }
+}

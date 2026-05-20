@@ -133,6 +133,12 @@ body {
   }
 }
 
+/* ── Apple device specific overrides to prevent iOS Safari white background rendering bug ── */
+.is-apple .image-stack {
+  filter: none !important;
+  -webkit-filter: none !important;
+}
+
 /* ── Mobile static hero image fallback ── */
 .mobile-hero-img {
   border-radius: 15px;

@@ -17,6 +17,18 @@ gsap.registerPlugin(ScrollTrigger);
 function App() {
   const [preloaderDone, setPreloaderDone] = useState(false);
 
+  // ── Apple Device Detection ──────────────────────────────────────────────────
+  useEffect(() => {
+    const ua = window.navigator.userAgent;
+    const isAppleDevice = /iPad|iPhone|iPod/.test(ua) || 
+      (ua.includes('Mac') && 'ontouchend' in document) ||
+      /Macintosh/.test(ua);
+    
+    if (isAppleDevice) {
+      document.documentElement.classList.add('is-apple');
+    }
+  }, []);
+
   // ── Lenis smooth scrolling ──────────────────────────────────────────────────
   // Creates a Lenis instance and syncs it with GSAP's ticker so that all
   // existing ScrollTrigger animations update correctly during smooth scrolling.

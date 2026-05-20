@@ -97,6 +97,11 @@ const StickyCards = () => {
 
     const isMobile = window.innerWidth <= 768;
 
+    const ua = window.navigator.userAgent;
+    const isApple = /iPad|iPhone|iPod/.test(ua) || 
+      (ua.includes('Mac') && 'ontouchend' in document) ||
+      /Macintosh/.test(ua);
+
     cards.forEach((card, i) => {
       gsap.set(card, {
         xPercent: -50,
@@ -134,11 +139,11 @@ const StickyCards = () => {
 
         cards.forEach((card, i) => {
           if (i < activeIndex) {
-            gsap.set(card, { yPercent: -250, rotationX: 35, scale: 0.9 });
+            gsap.set(card, { yPercent: -250, rotationX: isApple ? 0 : 35, scale: 0.9 });
           } else if (i === activeIndex) {
             gsap.set(card, {
               yPercent: gsap.utils.interpolate(-50, -250, segProgress),
-              rotationX: gsap.utils.interpolate(0, 35, segProgress),
+              rotationX: isApple ? 0 : gsap.utils.interpolate(0, 35, segProgress),
               scale: gsap.utils.interpolate(1, 0.9, segProgress),
             });
           } else {
