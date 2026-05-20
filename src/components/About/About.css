@@ -174,7 +174,7 @@
   font-weight: 400;
   /* Increased line-height gives each paragraph more vertical space */
   line-height: 2;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.8);
   margin: 0;
   opacity: 0;
 }
@@ -268,7 +268,7 @@
 .about-edu__degree {
    font-size: clamp(0.92rem, 1.5vw, 1.1rem);
   font-size: 0.78rem;
-  color: rgba(255, 255, 255, 0.38);
+  color: rgba(255, 255, 255, 0.8);
   line-height: 1.6;
 }
 .about-edu__badge {

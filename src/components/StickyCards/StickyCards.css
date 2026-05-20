@@ -308,6 +308,7 @@
   .sc-card {
     width: calc(100% - 2rem);
     height: 70%;
+    top: 58%;
   }
 
   .sc-card-inner {
@@ -353,7 +354,7 @@
   .sc-card {
     width: calc(100% - 1rem);
     height: 60%;
-    top: 45%;   /* pull card higher — removes large empty gap above on mobile */
+    top: 54%;   /* lowered from 45% to prevent overlapping header text */
   }
 
   .sc-card-inner {
@@ -426,7 +427,7 @@
   .sc-card {
     width: calc(100% - 1rem);
     height: 55%;
-    top: 42%;   /* pull card further up on small phones */
+    top: 52%;   /* lowered from 42% to prevent overlapping header text */
   }
 
   .sc-card-inner {
@@ -435,7 +436,7 @@
   }
 
   .sc-header {
-    top: 0.5rem;
+    top: 1.25rem; /* slightly increased from 0.5rem for notch safety and spacing */
   }
 
   .sc-eyebrow {
@@ -518,6 +519,7 @@
 @media (max-width: 900px) {
   .is-apple .sc-card {
     height: 76% !important; /* Make card taller so content fits without cropping */
+    top: 58% !important; /* lowered match */
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05) !important;
   }
 }
@@ -525,7 +527,7 @@
 @media (max-width: 680px) {
   .is-apple .sc-card {
     height: 72% !important; /* Make card taller on small devices */
-    top: 42% !important; /* Adjust centering to compensate for height */
+    top: 51% !important; /* Adjusted to prevent overlap */
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.05) !important;
   }
 }
@@ -533,7 +535,7 @@
 @media (max-width: 480px) {
   .is-apple .sc-card {
     height: 68% !important; /* Make card taller on very small devices */
-    top: 40% !important; /* Adjust centering */
+    top: 49% !important; /* Adjusted to prevent overlap */
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05) !important;
   }
   .is-apple .sc-image-section {
